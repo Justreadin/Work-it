@@ -4,62 +4,125 @@ import { useForm } from "../../contexts/FormContext";
 import { EduErrorProp, EduProp } from "../../constant/constant.type";
 const EducationForm: React.FC = () => {
 
-  const[education, setEducation]=useState<EduProp>(
-    {highestDegree: "",nameOfSchool:"",startDate: "",endDate:"",schooling: false,schoolState:"",schoolCountry: ""}
+  const [education, setEducation] = useState<EduProp>(
+    { highestDegree: "", nameOfSchool: "", startDate: "", endDate: "", schooling: false, schoolState: "", schoolCountry: "" }
   )
 
-  const[error,setErr]=useState<EduErrorProp>({highestDegree: "",nameOfSchool:"",startDate: "",endDate:"",schooling: false,schoolState:"",schoolCountry: "" })
+  const [error, setErr] = useState<EduErrorProp>({ highestDegree: "", nameOfSchool: "", startDate: "", endDate: "", schooling: false, schoolState: "", schoolCountry: "" })
 
   const selectRef = useRef<HTMLSelectElement | null>(null)
   useEffect(
-    ()=>{
+    () => {
       selectRef.current?.focus()
-    },[]
+    }, []
   )
 
   const formState = useForm()
   const navigate = useNavigate()
- 
 
-  const handleChange = (e:React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
-    const{name,type, value}=e.target
-    setEducation((prev)=>{
-      return({...prev, [name]: type !=="checkbox"? value: true})
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, type, value } = e.target
+    setEducation((prev) => {
+      return ({ ...prev, [name]: type !== "checkbox" ? value : true })
     })
 
-    setErr((prev)=>{
-      return({...prev, [name]: ""})
+    setErr((prev) => {
+      return ({ ...prev, [name]: "" })
     })
   };
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e:React.FormEvent<HTMLFormElement> | undefined)=>{
-    e?.preventDefault()
-    
-  }
-  const handleNext = ()=>{
-    let values = Object.values(education).filter((item)=> item == "")
-    if(values.length === 0){
-      formState?.setEducation(education)
-      formState?.setFilled((prev)=>{
-        return({...prev, education: true})
-      })
-      navigate("/sign-upprofile/interest")
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement> | undefined): Promise<boolean> => {
+    e?.preventDefault();
+    setLoading(true);
+
+    // Prepare request body with all education fields
+    const educationData = {
+      degree: education.highestDegree,   // Matches backend "degree"
+      institution: education.nameOfSchool, // Matches backend "institution"
+      startDate: education.startDate, // Adding start date
+      endDate: education.endDate,     // Adding end date
+      schooling: education.schooling, // Boolean field
+      schoolState: education.schoolState, // Adding school state
+      schoolCountry: education.schoolCountry // Adding school country
+    };
+
+    try {
+      console.log("Request received", educationData);
+      const response = await fetch("http://localhost:5600/api/education", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(educationData), // Sending full data
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit data.");
+      }
+
+      const result = await response.json();
+      console.log("Response:", result);
+
+      // Save data on success
+      formState?.setEducation(education);
+      formState?.setFilled((prev) => ({
+        ...prev,
+        education: true,
+      }));
+
+      return true; // Submission successful
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Failed to submit the form. Please try again.");
+      return false; // Submission failed
+    } finally {
+      setLoading(false);
     }
-    else {
-      let newErrors: EduErrorProp = { highestDegree: "",nameOfSchool:"",startDate: "",endDate:"",schooling: false,schoolState:"",schoolCountry: ""}
+  };
 
-      Object.keys(education).forEach((key)=>{
-        let fieldKey = key as keyof EduProp
-        if(typeof education[fieldKey] === 'string' && !education[fieldKey].trim()){
-          newErrors[fieldKey]= `${fieldKey.toLowerCase()} is required`
+  const handleNext = async () => {
+    let values = Object.values(education).filter((item) => item === "");
+
+    if (values.length === 0) {
+      try {
+        const success = await handleSubmit(undefined); // Submit form
+
+        if (success) {
+          navigate("/sign-upprofile/interest"); // Navigate only on success
         }
-      })
-      setErr(newErrors)
+      } catch (error) {
+        console.error("Error submitting form:", error);
+        alert("Form submission failed. Please try again.");
+      }
+    } else {
+      let newErrors: EduErrorProp = {
+        highestDegree: "",
+        nameOfSchool: "",
+        startDate: "",
+        endDate: "",
+        schooling: false,
+        schoolState: "",
+        schoolCountry: "",
+      };
+
+      Object.keys(education).forEach((key) => {
+        let fieldKey = key as keyof EduProp;
+        if (typeof education[fieldKey] === "string" && !education[fieldKey].trim()) {
+          newErrors[fieldKey] = `${fieldKey.toLowerCase()} is required`;
+        }
+      });
+
+      setErr(newErrors);
     }
-  }
-  const handleBack = ()=>{
-    navigate("/sign-upprofile")
-  }
+  };
+
+  const handleBack = () => {
+    navigate("/sign-upprofile");
+  };
+
 
   return (
     <div className="w-full md:w-[70%] pb-[5%]">
@@ -76,7 +139,7 @@ const EducationForm: React.FC = () => {
           <select
             name="highestDegree"
             ref={selectRef}
-            onChange={(e)=>handleChange(e)}
+            onChange={(e) => handleChange(e)}
             className="w-full border-2  focus:outline-customPurple px-5 py-3 rounded-3xl"
           >
             <option className="text-dark_purple font-semibold" value="">
@@ -116,12 +179,12 @@ const EducationForm: React.FC = () => {
               Start date {" "}
               <span className="text-xs text-red-500 my-10 font-semibold">{error.startDate}</span>
             </label><br />
-            
+
             <input
               className="w-full border-2 text-dark_gray font-semibold rounded-3xl focus:outline-customPurple p-3"
               type="Date"
               name="startDate"
-              onChange={(e)=>handleChange(e)}
+              onChange={(e) => handleChange(e)}
               placeholder="_ _/_ _/_ _"
               required
             />
@@ -132,13 +195,13 @@ const EducationForm: React.FC = () => {
             <label className="text-dark_gray opacity-80" htmlFor="endDate">
               End date {" "}<span className="text-xs text-red-500 my-10 font-semibold">{error.endDate}</span>
             </label><br />
-            
-            
+
+
             <input
               className="w-full border-2 text-dark_gray font-semibold rounded-3xl focus:outline-customPurple p-3"
               type="date"
               name="endDate"
-              onChange={(e)=>handleChange(e)}
+              onChange={(e) => handleChange(e)}
               placeholder="_ _/_ _/_ _"
               required
             />
@@ -148,9 +211,9 @@ const EducationForm: React.FC = () => {
 
         {/* Still schooling */}
         <div className="">
-          <span className="text-xs text-red-500 font-semibold">{error.schooling}</span>{" "}<br/>
+          <span className="text-xs text-red-500 font-semibold">{error.schooling}</span>{" "}<br />
           <span className="text-dark_gray opacity-80 mr-4">I am still schooling</span>{" "}
-          
+
           <input
             type="checkbox"
             name="schooling"
@@ -166,7 +229,7 @@ const EducationForm: React.FC = () => {
             </label>
             <select
               name="schoolState"
-              onChange={(e)=>handleChange(e)}
+              onChange={(e) => handleChange(e)}
               className="w-full border-2 text-dark_gray font-semibold rounded-3xl focus:outline-customPurple px-4 py-3"
             >
               <option className="text-dark_purple font-semibold" value="">
@@ -186,11 +249,11 @@ const EducationForm: React.FC = () => {
           <div className="w-full my-6 md:my-0">
             <label className="text-dark_gray opacity-80" htmlFor="schoolCountry">Country
               {" "}
-            <span className="text-xs text-red-500 font-semibold">{error.schoolCountry}</span>
+              <span className="text-xs text-red-500 font-semibold">{error.schoolCountry}</span>
             </label>
             <select
               name="schoolCountry"
-              onChange={(e)=>handleChange(e)}
+              onChange={(e) => handleChange(e)}
               className="w-full border-2 text-dark_gray font-semibold rounded-3xl focus:outline-customPurple px-4 py-3"
             >
               <option className="text-dark_purple font-semibold" value="">
@@ -214,7 +277,7 @@ const EducationForm: React.FC = () => {
           Back
         </button>
         <button
-            onClick={handleNext}
+          onClick={handleNext}
           className="bg-dark_purple py-2 px-8 rounded-3xl text-white font-bold border-2 border-transparent hover:bg-white_gray hover:text-dark_purple hover:border-dark_purple"
         >
           Next

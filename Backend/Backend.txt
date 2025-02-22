@@ -1,0 +1,35 @@
+Backend API Routes
+structure for backend API routes based on frontend components and features:
+
+Route	Method	Description	Frontend Integration
+/api/auth/register	POST	Register a new user (client or freelancer).	forms/SignUp/PersonalInfo.tsx
+/api/auth/login	POST	Authenticate a user and return a token.	forms/Login.tsx
+/api/users/:id	GET	Get user details by ID.	protected/client/ and protected/employee/
+/api/jobs	GET	Fetch all available jobs.	home/ApplyForJob.tsx
+/api/jobs/:id	GET	Fetch details of a specific job by ID.	components/JobDetails.tsx
+/api/jobs	POST	Post a new job (client-specific feature).	protected/client/
+/api/jobs/:id/apply	POST	Apply to a job (freelancer-specific feature).	protected/employee/
+/api/jobs/:id/status	PATCH	Update job status (e.g., completed, ongoing).	protected/client/
+/api/users/:id/skills	GET	Get a freelancer's skills.	forms/SignUp/Interest.tsx
+/api/users/:id/skills	POST	Update or add skills for a freelancer.	forms/SignUp/Interest.tsx
+Suggested Frontend Files to Start Backend Integration
+You should start by focusing on the following frontend files to integrate with the backend APIs:
+
+Authentication:
+
+forms/Login.tsx: For the /api/auth/login route.
+forms/SignUp/PersonalInfo.tsx: For the /api/auth/register route.
+Job Listings:
+
+home/ApplyForJob.tsx: For the /api/jobs (GET) route.
+components/JobDetails.tsx: For the /api/jobs/:id route.
+User-Specific Data:
+
+protected/client/: For routes like /api/jobs (POST), /api/jobs/:id/status, and /api/users/:id.
+protected/employee/: For routes like /api/jobs/:id/apply and /api/users/:id/skills.
+Skill Management:
+
+forms/SignUp/Interest.tsx: For /api/users/:id/skills (GET and POST)
+
+
+

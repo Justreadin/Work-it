@@ -10,6 +10,7 @@ export interface EduProp{
 }
 
 export interface PersonalInfoProp{
+    surname: any
     firstname: string,
     surnname: string,
     number: string,

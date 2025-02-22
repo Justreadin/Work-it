@@ -28,6 +28,7 @@ function App() {
              <Route path="/sign-upprofile/interest" element={<Interest/>}></Route>
           </Route>
           <Route path="/personalized" element={<PersonalizedModal/>}/>
+          <Route path="/overview" element={<Overview/>}/>
           <Route path="/avatarupload"  element={<PhotoUpload/>}/>
           <Route path="/home" element={<PageLayout/>}>
             <Route index element={<Home/>}></Route>
