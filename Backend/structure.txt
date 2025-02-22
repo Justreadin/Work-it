@@ -1,1 +1,19 @@
-d
+Backend/
+│   ├── server.js
+│   ├── config/
+│   │   └── db.js
+│   ├── controllers/
+│   │   ├── userController.js
+│   ├── models/
+│   │   └── userModel.js
+│   ├── routes/
+│   │   ├── api.js
+│   │   └── auth.js
+│   ├── uploads/
+│   ├── .env
+│   ├── .gitignore
+│   ├── Backend.txt
+│   ├── package-lock.json
+|   |-- package.json
+|   |-- Readme.md
+|   |-- structure.txt
