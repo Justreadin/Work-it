@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+}
+body{
+  background-color: #ffffff;
+}
+
+.modalbg{
+  background-color: rgba(0, 0, 0, 0.75);
+}
+
+.toast{
+  z-index: 9999;
+}
+
+.dropshadow{
+  box-shadow: 2px 7px 31.7px 0px #00000024;
+  /* width: 200px;
+  opacity: 0.8px; */
+
+
+}
+.transparent_bg{
+  color: #333333;
+  color: #cccccc;
+  background: rgba(0, 0, 0, 0.7);
+}
+.equipbg{
+  background-image: url("./assets/Images/Union.png");
+  background-position: center;
+  background-repeat:no-repeat;
+  background-size: cover;
+}
+
+.equipbgtwo{
+  background-image: url("./assets/Images/Frame 688.png");
+  background-position:right bottom;
+  background-repeat:no-repeat;
+}
+.quoteimg{
+  background-image: url("./assets/Images/Vector 8.png");
+  background-position: center;
+  background-size: 150px;
+  background-repeat:no-repeat;
+}
+
+.ringbg{
+  background-image: url("./assets/Images/image.png");
+  background-position: bottom center;
+  background-size: 150px;
+  background-repeat:no-repeat;
+}
+.herobg{
+  background-image: url("./assets/Images/Vector (1).png");
+  background-position: bottom right;
+  background-size: 50% 80%;
+  background-repeat:no-repeat;
+}
+@media(max-width: 760px){
+  .herobg{
+    background-size: 100% 40%;
+    background-position: bottom;
+  }
+
+  .equipbgtwo{
+    background-size: 80%;
+  }
+}
