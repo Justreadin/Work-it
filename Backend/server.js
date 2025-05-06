@@ -11,6 +11,7 @@ const { getUserByEmail } = require('./models/userModel');
 
 const app = express();
 
+app.use(express.json());
 
 // Check if MONGO_URI is valid
 if (!process.env.MONGO_URI) {

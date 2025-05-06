@@ -148,14 +148,16 @@ const savePersonalInformationHandler = async (req, res) => {
 };
 
 const saveEducationFormHandler = async (req, res) => {
-  const { degree, institution, startDate, endDate, schooling, schoolState, schoolCountry } = req.body;
+  const { email, degree, institution, startDate, endDate, schooling, schoolState, schoolCountry } = req.body;
 
   try {
-    if (!degree || !institution || !startDate || !endDate || schoolState === "" || schoolCountry === "") {
+    if (
+      !email || !degree || !institution || !startDate || !endDate ||
+      schoolState === "" || schoolCountry === ""
+    ) {
       return res.status(400).json({ error: "All fields are required" });
     }
 
-    // Prepare the education object
     const educationDetails = {
       degree,
       institution,
@@ -163,11 +165,11 @@ const saveEducationFormHandler = async (req, res) => {
       endDate,
       schooling,
       schoolState,
-      schoolCountry
+      schoolCountry,
     };
 
-    // Save the education details in the user document
-    const result = await saveEducationForm(req.user.email, educationDetails);
+    const result = await saveEducationForm(email, educationDetails);
+
     res.status(201).json({ message: "Education form saved successfully", result });
   } catch (error) {
     console.error(error);
