@@ -31,17 +31,7 @@ mongoose.connect("mongodb+srv://dave400g:Justreading.1m@workit.xm1ak19.mongodb.n
   .catch((err) => console.error("MongoDB connection error:", err));
 
 // Middleware
-app.use(cors({
-  origin: '*', // Allow all origins
-  credentials: false, // Set to true only if you need cookies or auth headers
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
-
-// Optional: respond to preflight requests
-app.options('*', cors());
-
-
+app.use(cors());
 
 app.use(bodyParser.json());
 app.use('/uploads', express.static('uploads'));
