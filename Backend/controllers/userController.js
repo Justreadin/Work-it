@@ -155,13 +155,26 @@ const saveEducationFormHandler = async (req, res) => {
       return res.status(400).json({ error: "All fields are required" });
     }
 
-    const result = await saveEducationForm(degree, institution, startDate, endDate, schooling, schoolState, schoolCountry);
+    // Prepare the education object
+    const educationDetails = {
+      degree,
+      institution,
+      startDate,
+      endDate,
+      schooling,
+      schoolState,
+      schoolCountry
+    };
+
+    // Save the education details in the user document
+    const result = await saveEducationForm(req.user.email, educationDetails);
     res.status(201).json({ message: "Education form saved successfully", result });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Failed to save education form" });
   }
 };
+
 
 // --- OTP via Redis ---
 const sendOtp = async (email) => {

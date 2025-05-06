@@ -285,19 +285,20 @@ const savePersonalInformation = async (
 };
 
 // Save education details to the user document
-const saveEducationForm = async (email, education) => {
+const saveEducationForm = async (email, educationDetails) => {
   try {
     const user = await User.findOneAndUpdate(
       { email },
-      { $push: { education: education } },
+      { $push: { education: educationDetails } }, // Push the educationDetails into the education array
       { new: true }
     );
     return user;
   } catch (error) {
-    console.error(error);
+    console.error("Error saving education:", error);
     throw error;
   }
 };
+
 
 // Save OTP for the user
 const saveOtp = async (email, otp) => {
