@@ -1,7 +1,7 @@
 // config/redis.js
 const Redis = require('ioredis');
 
-// Use REDIS_PUBLIC_URL if provided
+// Use REDIS_PUBLIC_URL if provided, otherwise fallback to localhost
 const redisUrl = process.env.REDIS_PUBLIC_URL || 'redis://localhost:6379';
 
 // Create and configure the Redis client

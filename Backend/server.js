@@ -115,12 +115,12 @@ app.get('/api/user/:id', async (req, res) => {
 });
 
 // Serve static frontend
-const frontendDistPath = path.join(__dirname, '../Frontend/dist');
+/*const frontendDistPath = path.join(__dirname, '../Frontend/dist');
 app.use(express.static(frontendDistPath));
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(frontendDistPath, 'index.html'));
 });
-
+*/
 const port = process.env.PORT || 5600;
 app.listen(port, () => console.log(`Server running on port ${port}`));
