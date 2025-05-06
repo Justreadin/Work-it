@@ -162,6 +162,18 @@ module.exports = {
 const mongoose = require("mongoose");
 const redisClient = require("../config/redis");
 
+
+// Education Subdocument Schema (structured explicitly to match controller)
+const educationSchema = new mongoose.Schema({
+  degree: { type: String, required: true },
+  institution: { type: String, required: true },
+  startDate: { type: Date, required: true },
+  endDate: { type: Date, required: true },
+  schooling: { type: Boolean, required: true },
+  schoolState: { type: String, required: true },
+  schoolCountry: { type: String, required: true }
+});
+
 // User Schema
 const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
@@ -180,17 +192,7 @@ const userSchema = new mongoose.Schema({
     state: String,
     localGovernment: String,
   },
-  education: [
-    {
-      degree: String,
-      institution: String,
-      startDate: Date,
-      endDate: Date,
-      schooling: String,
-      schoolState: String,
-      schoolCountry: String,
-    },
-  ],
+  education: [educationSchema],
   otp: { type: String }, // stores OTP if needed
   otpCreatedAt: { type: Date }, // timestamp for OTP expiry check
 });
@@ -284,14 +286,16 @@ const savePersonalInformation = async (
   }
 };
 
-// Save education details to the user document
+// Save Education Form (educationDetails must match the educationSchema)
 const saveEducationForm = async (email, educationDetails) => {
   try {
     const user = await User.findOneAndUpdate(
       { email },
-      { $push: { education: educationDetails } }, // Push the educationDetails into the education array
+      { $push: { education: educationDetails } },
       { new: true }
     );
+
+    await redisClient.del(`user:email:${email}`);
     return user;
   } catch (error) {
     console.error("Error saving education:", error);
