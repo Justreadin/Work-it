@@ -1,10 +1,15 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const crypto = require("crypto"); // To generate random OTP
+const crypto = require("crypto");
 const path = require("path");
 const multer = require("multer");
-const nodemailer = require("nodemailer"); // <-- Added nodemailer
+const nodemailer = require("nodemailer");
 const { savePersonalInformation } = require("../models/userModel");
+const redis = require("redis");
+
+// Redis client setup
+const redisClient = redis.createClient();
+redisClient.connect().catch(console.error);
 
 // Configure multer for file storage
 const storage = multer.diskStorage({
@@ -22,27 +27,21 @@ const upload = multer({ storage: storage });
 const {
   getUserByEmail,
   createUser,
-  savePersonalInfo, // Renamed to avoid conflict
-  saveEducationForm, // Renamed to avoid conflict
-  saveOtp,
-  getOtp,
+  saveEducationForm,
   saveUserPhoto,
   saveUserInterests,
 } = require("../models/userModel");
 
-// Environment variables
 const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret_key";
 
-// Create a transporter using Nodemailer (using Gmail as example)
 const transporter = nodemailer.createTransport({
   service: "Gmail",
   auth: {
-    user: process.env.EMAIL_USER, // Your email address (e.g. your-email@gmail.com)
-    pass: process.env.EMAIL_PASS, // Your email password or app-specific password
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
 });
 
-// Login controller
 const loginUser = async (req, res) => {
   const { mail, password } = req.body;
 
@@ -74,7 +73,6 @@ const loginUser = async (req, res) => {
   }
 };
 
-// Register user
 const registerUser = async (req, res) => {
   const { mail, password, confirmPassword } = req.body;
 
@@ -107,9 +105,10 @@ const registerUser = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+
 const savePersonalInformationHandler = async (req, res) => {
   const {
-    email, // Extract email from request body
+    email,
     firstname,
     surname,
     number,
@@ -148,8 +147,6 @@ const savePersonalInformationHandler = async (req, res) => {
   }
 };
 
-
-// Save education form
 const saveEducationFormHandler = async (req, res) => {
   const { degree, institution, startDate, endDate, schooling, schoolState, schoolCountry } = req.body;
 
@@ -166,21 +163,20 @@ const saveEducationFormHandler = async (req, res) => {
   }
 };
 
-
-// Generate OTP and send it to the user's email
+// --- OTP via Redis ---
 const sendOtp = async (email) => {
-  const otp = crypto.randomInt(1000, 9999).toString(); // Generate a 4-digit OTP
-  await saveOtp(email, otp);
+  const otp = crypto.randomInt(1000, 9999).toString();
 
-  // Configure the email options
+  // Store OTP in Redis with a 5-minute expiry
+  await redisClient.setEx(`otp:${email}`, 300, otp);
+
   const mailOptions = {
-    from: process.env.EMAIL_USER, // Sender address
-    to: email, // Recipient's email address
+    from: process.env.EMAIL_USER,
+    to: email,
     subject: "Your Verification Code",
     text: `Your verification code is: ${otp}`,
   };
 
-  // Send the email using the transporter
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       console.error("Error sending email:", error);
@@ -190,11 +186,9 @@ const sendOtp = async (email) => {
   });
 };
 
-// Verify the OTP entered by the user
 const verifyOtp = async (email, otpEntered) => {
-  const otpRecord = await getOtp(email);
-
-  if (otpRecord && otpRecord.otp === otpEntered) {
+  const cachedOtp = await redisClient.get(`otp:${email}`);
+  if (cachedOtp === otpEntered) {
     console.log("OTP Verified");
     return true;
   } else {
@@ -203,7 +197,6 @@ const verifyOtp = async (email, otpEntered) => {
   }
 };
 
-// Upload profile photo
 const uploadPhoto = async (req, res) => {
   const { userId } = req.body;
   const file = req.file;
@@ -215,22 +208,17 @@ const uploadPhoto = async (req, res) => {
   try {
     const photoPath = `/uploads/${file.filename}`;
     await saveUserPhoto(userId, photoPath);
-    res
-      .status(200)
-      .json({ message: "Photo uploaded successfully", photoPath });
+    res.status(200).json({ message: "Photo uploaded successfully", photoPath });
   } catch (error) {
     res.status(500).json({ message: "Error uploading photo", error });
   }
 };
 
-// Save the interests provided by the user
 const saveInterests = async (req, res) => {
   const { userId, interests } = req.body;
 
   if (!userId || !interests) {
-    return res
-      .status(400)
-      .json({ message: "User ID and interests are required" });
+    return res.status(400).json({ message: "User ID and interests are required" });
   }
 
   try {

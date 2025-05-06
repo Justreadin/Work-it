@@ -1,10 +1,22 @@
-const { pool } = require("../config/db");
+/**const { pool } = require("../config/db");
+const redisClient = require("../config/redis");
 
-// Fetch user by email
+// Fetch user by email with Redis caching
 const getUserByEmail = async (email) => {
+  const cacheKey = `user:email:${email}`;
+
   try {
+    const cachedUser = await redisClient.get(cacheKey);
+    if (cachedUser) return JSON.parse(cachedUser);
+
     const [rows] = await pool.query("SELECT * FROM users WHERE email = ?", [email]);
-    return rows[0];
+    const user = rows[0];
+
+    if (user) {
+      await redisClient.setEx(cacheKey, 3600, JSON.stringify(user)); // cache for 1 hour
+    }
+
+    return user;
   } catch (error) {
     console.error(error);
     throw error;
@@ -18,7 +30,13 @@ const createUser = async (email, hashedPassword) => {
       "INSERT INTO users (email, password) VALUES (?, ?)",
       [email, hashedPassword]
     );
-    return { id: result.insertId, email };
+
+    // Optional: Set the cache after creation
+    const newUser = { id: result.insertId, email };
+    const cacheKey = `user:email:${email}`;
+    await redisClient.setEx(cacheKey, 3600, JSON.stringify(newUser));
+
+    return newUser;
   } catch (error) {
     console.error(error);
     throw error;
@@ -26,7 +44,7 @@ const createUser = async (email, hashedPassword) => {
 };
 
 const savePersonalInformation = async (
-  email, // Add email parameter
+  email,
   firstname,
   surname,
   number,
@@ -43,6 +61,10 @@ const savePersonalInformation = async (
       "INSERT INTO personal_information (email, firstname, surname, number, country, city, dateOfBirth, gender, address, state, localGovernment) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [email, firstname, surname, number, country, city, dateOfBirth, gender, address, state, localGovernment]
     );
+
+    // Invalidate user cache
+    await redisClient.del(`user:email:${email}`);
+
     return result;
   } catch (error) {
     console.error(error);
@@ -63,8 +85,6 @@ const saveEducationForm = async (degree, institution, startDate, endDate, school
   }
 };
 
-
-// Save OTP to the database
 const saveOtp = async (email, otp) => {
   try {
     const [result] = await pool.query(
@@ -78,10 +98,12 @@ const saveOtp = async (email, otp) => {
   }
 };
 
-// Get OTP from the database
 const getOtp = async (email) => {
   try {
-    const [rows] = await pool.query("SELECT otp FROM user_otp WHERE email = ? ORDER BY created_at DESC LIMIT 1", [email]);
+    const [rows] = await pool.query(
+      "SELECT otp FROM user_otp WHERE email = ? ORDER BY created_at DESC LIMIT 1",
+      [email]
+    );
     return rows[0];
   } catch (error) {
     console.error(error);
@@ -89,26 +111,20 @@ const getOtp = async (email) => {
   }
 };
 
-// Save uploaded photo file path to the database
 const saveUserPhoto = async (userId, photoPath) => {
   try {
     const [result] = await pool.query(
       "UPDATE users SET photo = ? WHERE id = ?",
       [photoPath, userId]
     );
-    return result;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
-// Save user interests to the database
-const saveUserInterests = async (userId, interests) => {
-  try {
-    const [result] = await pool.query(
-      "UPDATE users SET interests = ? WHERE id = ?",
-      [JSON.stringify(interests), userId]  // Store interests as a JSON string
-    );
+
+    // Invalidate all possible user cache keys
+    await redisClient.del(`user:id:${userId}`);
+
+    // Optional: if email is available (recommended to fetch and delete via email too)
+    // const user = await getUserById(userId);
+    // if (user?.email) await redisClient.del(`user:email:${user.email}`);
+
     return result;
   } catch (error) {
     console.error(error);
@@ -116,6 +132,236 @@ const saveUserInterests = async (userId, interests) => {
   }
 };
 
-module.exports = { getUserByEmail, createUser, savePersonalInformation,
-     saveEducationForm, saveOtp, getOtp, saveUserPhoto, saveUserInterests 
-     };
+const saveUserInterests = async (userId, interests) => {
+  try {
+    const [result] = await pool.query(
+      "UPDATE users SET interests = ? WHERE id = ?",
+      [JSON.stringify(interests), userId]
+    );
+
+    await redisClient.del(`user:id:${userId}`);
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+module.exports = {
+  getUserByEmail,
+  createUser,
+  savePersonalInformation,
+  saveEducationForm,
+  saveOtp,
+  getOtp,
+  saveUserPhoto,
+  saveUserInterests,
+};
+*/
+
+const mongoose = require("mongoose");
+const redisClient = require("../config/redis");
+
+// User Schema
+const userSchema = new mongoose.Schema({
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  photo: { type: String }, // optional, for user photo
+  interests: { type: [String], default: [] }, // stores user interests as an array of strings
+  personalInformation: {
+    firstname: String,
+    surname: String,
+    number: String,
+    country: String,
+    city: String,
+    dateOfBirth: Date,
+    gender: String,
+    address: String,
+    state: String,
+    localGovernment: String,
+  },
+  education: [
+    {
+      degree: String,
+      institution: String,
+      startDate: Date,
+      endDate: Date,
+      schooling: String,
+      schoolState: String,
+      schoolCountry: String,
+    },
+  ],
+  otp: { type: String }, // stores OTP if needed
+  otpCreatedAt: { type: Date }, // timestamp for OTP expiry check
+});
+
+const User = mongoose.model("User", userSchema);
+
+// Fetch user by email with Redis caching
+const getUserByEmail = async (email) => {
+  const cacheKey = `user:email:${email}`;
+
+  try {
+    const cachedUser = await redisClient.get(cacheKey);
+    if (cachedUser) return JSON.parse(cachedUser);
+
+    const user = await User.findOne({ email });
+    if (user) {
+      await redisClient.setEx(cacheKey, 3600, JSON.stringify(user)); // cache for 1 hour
+    }
+
+    return user;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+// Create a new user
+const createUser = async (email, hashedPassword) => {
+  try {
+    const newUser = new User({ email, password: hashedPassword });
+    await newUser.save();
+
+    // Optional: Set the cache after creation
+    const cacheKey = `user:email:${email}`;
+    await redisClient.setEx(cacheKey, 3600, JSON.stringify(newUser));
+
+    return newUser;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+// Save personal information to the user document
+const savePersonalInformation = async (
+  email,
+  firstname,
+  surname,
+  number,
+  country,
+  city,
+  dateOfBirth,
+  gender,
+  address,
+  state,
+  localGovernment
+) => {
+  try {
+    const user = await User.findOneAndUpdate(
+      { email },
+      {
+        personalInformation: {
+          firstname,
+          surname,
+          number,
+          country,
+          city,
+          dateOfBirth,
+          gender,
+          address,
+          state,
+          localGovernment,
+        },
+      },
+      { new: true }
+    );
+
+    // Invalidate user cache
+    await redisClient.del(`user:email:${email}`);
+
+    return user;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+// Save education details to the user document
+const saveEducationForm = async (email, education) => {
+  try {
+    const user = await User.findOneAndUpdate(
+      { email },
+      { $push: { education: education } },
+      { new: true }
+    );
+    return user;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+// Save OTP for the user
+const saveOtp = async (email, otp) => {
+  try {
+    const user = await User.findOneAndUpdate(
+      { email },
+      { otp, otpCreatedAt: new Date() },
+      { new: true }
+    );
+    return user;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+// Get OTP for the user
+const getOtp = async (email) => {
+  try {
+    const user = await User.findOne({ email });
+    return user ? user.otp : null;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+// Save user photo (path)
+const saveUserPhoto = async (email, photoPath) => {
+  try {
+    const user = await User.findOneAndUpdate(
+      { email },
+      { photo: photoPath },
+      { new: true }
+    );
+
+    // Invalidate user cache
+    await redisClient.del(`user:email:${email}`);
+
+    return user;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+// Save user interests
+const saveUserInterests = async (email, interests) => {
+  try {
+    const user = await User.findOneAndUpdate(
+      { email },
+      { interests },
+      { new: true }
+    );
+
+    await redisClient.del(`user:email:${email}`);
+    return user;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+module.exports = {
+  getUserByEmail,
+  createUser,
+  savePersonalInformation,
+  saveEducationForm,
+  saveOtp,
+  getOtp,
+  saveUserPhoto,
+  saveUserInterests,
+};

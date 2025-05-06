@@ -85,54 +85,10 @@ router.get(
       JWT_SECRET,
       { expiresIn: "1h" }
     );
-    // For example, redirect to your frontend with the token as a query parameter
+
     res.redirect(`http://localhost:5173?token=${token}`);
   }
 );
 
-// ------------------------------
-// Existing Login Route (Email/Password)
-// ------------------------------
-router.post("/login", async (req, res) => {
-  const { mail, password } = req.body;
-
-  try {
-    // Validate input
-    if (!mail || !password) {
-      return res.status(400).json({ error: "Email and password are required" });
-    }
-
-    // Check if user exists
-    const [user] = await pool.query("SELECT * FROM users WHERE email = ?", [mail]);
-    if (user.length === 0) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    const userRecord = user[0];
-
-    // Compare passwords
-    const isPasswordValid = await bcrypt.compare(password, userRecord.password);
-    if (!isPasswordValid) {
-      return res.status(401).json({ error: "Invalid email or password" });
-    }
-
-    // Generate JWT
-    const token = jwt.sign(
-      {
-        id: userRecord.id,
-        email: userRecord.email,
-        role: userRecord.role,
-      },
-      JWT_SECRET,
-      { expiresIn: "1h" }
-    );
-
-    // Send response
-    res.json({ message: "Login successful", token });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Server error" });
-  }
-});
 
 module.exports = router;

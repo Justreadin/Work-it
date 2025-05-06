@@ -1,4 +1,4 @@
-const mysql = require("mysql2/promise");
+/**const mysql = require("mysql2/promise");
 require("dotenv").config();
 
 // Create a connection pool
@@ -40,3 +40,43 @@ if (process.env.NODE_ENV === "development") {
 }
 
 module.exports = { pool };
+*/
+const mongoose = require("mongoose");
+const redis = require("redis");
+require("dotenv").config();
+
+// MongoDB Connection
+const connectMongoDB = async () => {
+  try {
+    // Connect to MongoDB using the connection string from the environment variables
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log(`✅ Connected to MongoDB at ${process.env.MONGO_URI}`);
+  } catch (err) {
+    console.error("❌ MongoDB connection error:", err.message);
+    process.exit(1); // Exit if unable to connect to MongoDB
+  }
+};
+
+// Redis Client
+const redisClient = redis.createClient({
+  url: process.env.REDIS_URL || "redis://localhost:6379", // Use the REDIS_URL from .env or fallback to localhost
+  legacyMode: true, // For compatibility with older Redis libraries (optional)
+});
+
+redisClient.connect().catch((err) => {
+  console.error("❌ Redis connection error:", err.message);
+});
+
+redisClient.on("connect", () => {
+  console.log("✅ Connected to Redis");
+});
+
+redisClient.on("error", (err) => {
+  console.error("❌ Redis error:", err);
+});
+
+// Exporting the connection methods and Redis client
+module.exports = {
+  connectMongoDB,
+  redisClient,
+};
