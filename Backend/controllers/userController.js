@@ -230,16 +230,17 @@ const uploadPhoto = async (req, res) => {
 };
 
 const saveInterests = async (req, res) => {
-  const { userId, interests } = req.body;
+  const { email, interests } = req.body;
 
-  if (!userId || !interests) {
-    return res.status(400).json({ message: "User ID and interests are required" });
+  if (!email || !interests) {
+    return res.status(400).json({ message: "Email and interests are required" });
   }
 
   try {
-    await saveUserInterests(userId, interests);
+    await saveUserInterests(email, interests);
     res.status(200).json({ message: "Interests saved successfully" });
   } catch (error) {
+    console.error("Error saving interests:", error);
     res.status(500).json({ message: "Error saving interests", error });
   }
 };
