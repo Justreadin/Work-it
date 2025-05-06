@@ -16,7 +16,7 @@ const PersonalInformation: React.FC = () => {
     firstname: "",
     surname: "",
     number: "",
-    email: storedEmail,
+    email: storedEmail ?? undefined,
     country: "",
     city: "",
     dateOfBirth: "",

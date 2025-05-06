@@ -11,7 +11,10 @@ const PhotoUpload: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    setImage(file);
+    // In PhotoUpload.tsx
+    if (file) {
+      setImage(file);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

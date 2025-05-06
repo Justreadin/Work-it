@@ -9,19 +9,20 @@ export interface EduProp{
     schoolCountry:  string,
 }
 
-export interface PersonalInfoProp{
-    surname: any
-    firstname: string,
-    surnname: string,
-    number: string,
-    country: string,
-    city: string,
-    dateOfBirth:string,
-    gender: string,
-    address:string,
-    state: string,
-    localGoverment: string
-}
+export type PersonalInfoProp = {
+    firstname: string;
+    surname: string;
+    number: string;
+    email?: string;  // Add email here
+    country: string;
+    city: string;
+    dateOfBirth: string;
+    gender: string;
+    address: string;
+    state: string;
+    localGovernment: string;  // Note the spelling here
+  };
+  
 
 export interface ProviderProp{
     children: ReactNode

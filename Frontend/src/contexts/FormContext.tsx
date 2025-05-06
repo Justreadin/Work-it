@@ -26,7 +26,7 @@ const FormContextProvider: React.FC<ProviderProp> = ({ children }) => {
 
   const [personalInfo, setPersonalInfor] = useState<PersonalInfoProp>({
     firstname: "",
-    surnname: "",
+    surname: "",
     number: "",
     country: "",
     city: "",
@@ -34,7 +34,7 @@ const FormContextProvider: React.FC<ProviderProp> = ({ children }) => {
     gender: "",
     address: "",
     state: "",
-    localGoverment: "",
+    localGovernment: "",
   });
 
   const[filled, setFilled] = useState<FillProp>({personalInfor: false, education: false, interest: false})

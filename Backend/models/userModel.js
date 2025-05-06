@@ -302,6 +302,16 @@ const saveEducationForm = async (email, educationDetails) => {
   }
 };
 
+// Get OTP for the user
+const getOtp = async (email) => {
+  try {
+    const user = await User.findOne({ email });
+    return user ? user.otp : null;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
 
 // Save OTP for the user
 const saveOtp = async (email, otp) => {
@@ -318,16 +328,7 @@ const saveOtp = async (email, otp) => {
   }
 };
 
-// Get OTP for the user
-const getOtp = async (email) => {
-  try {
-    const user = await User.findOne({ email });
-    return user ? user.otp : null;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
+
 
 // Save user photo (path)
 const saveUserPhoto = async (email, photoPath) => {
