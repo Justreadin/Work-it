@@ -163,13 +163,12 @@ const mongoose = require("mongoose");
 const redisClient = require("../config/redis");
 
 
-// Education Subdocument Schema (structured explicitly to match controller)
 const educationSchema = new mongoose.Schema({
   degree: { type: String, required: true },
   institution: { type: String, required: true },
   startDate: { type: Date, required: true },
   endDate: { type: Date, required: true },
-  schooling: { type: Boolean, required: true },
+  schooling: { type: String, enum: ['Completed', 'Ongoing', 'Dropped'], required: true },
   schoolState: { type: String, required: true },
   schoolCountry: { type: String, required: true }
 });
