@@ -31,30 +31,16 @@ mongoose.connect("mongodb+srv://dave400g:Justreading.1m@workit.xm1ak19.mongodb.n
   .catch((err) => console.error("MongoDB connection error:", err));
 
 // Middleware
-
-const allowedOrigins = [
-  'http://localhost:5173',
-  'https://symmetrical-happiness-jjr69p6v74rg2qq6p-5173.app.github.dev',
-  'https://lyrical-p6de.onrender.com'
-];
-
 app.use(cors({
-  origin: (origin, callback) => {
-    console.log("Incoming origin:", origin);  // Debug log
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      console.error("Blocked by CORS:", origin);
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
+  origin: '*', // Allow all origins
+  credentials: false, // Set to true only if you need cookies or auth headers
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// Allow preflight requests
+// Optional: respond to preflight requests
 app.options('*', cors());
+
 
 
 app.use(bodyParser.json());
