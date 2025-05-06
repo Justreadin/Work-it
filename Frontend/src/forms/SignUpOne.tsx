@@ -43,9 +43,10 @@ const SignUpOne: React.FC = () => {
 
   const handleGoogleAuth = async () => {
     try {
-      const response = await fetch("http://localhost:5600/api/auth/google");
+      const response = await fetch("https://lyrical-p6de.onrender.com/api/auth/google");
       if (!response.ok) throw new Error("Google Authentication Failed");
       const data = await response.json();
+      console.log(data); // Or use data.token, data.username, etc.
       localStorage.setItem("authToken", data.token);
       localStorage.setItem("userId", data.id);
       localStorage.setItem("role", data.role);
@@ -79,14 +80,15 @@ const SignUpOne: React.FC = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:5600/api/signup", {
+      const response = await fetch("https://lyrical-p6de.onrender.com/api/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
       if (!response.ok) throw new Error("Sign-up failed. Please try again.");
       const data = await response.json();
-
+      console.log(data); // Or use data.token, data.username, etc.
+      
       // Store email in localStorage for later use in personal information
       localStorage.setItem("userEmail", formData.mail);
   

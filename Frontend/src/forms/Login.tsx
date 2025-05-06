@@ -38,7 +38,7 @@ const Login: React.FC = () => {
 
   // Redirect the user to the Google auth endpoint
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:5600/auth/google";
+    window.location.href = "https://lyrical-p6de.onrender.com/auth/google";
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -60,7 +60,7 @@ const Login: React.FC = () => {
 
     try {
       console.log("Form Data Submitted:", formData);
-      const response = await fetch("http://localhost:5600/api/login", {
+      const response = await fetch("https://lyrical-p6de.onrender.com/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

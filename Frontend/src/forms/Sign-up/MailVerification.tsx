@@ -51,7 +51,7 @@ const MailVerification: React.FC<MailVerificationProps> = ({ email }) => {
 
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:5600/api/verify-otp", {
+      const response = await fetch("https://lyrical-p6de.onrender.com/api/verify-otp", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -111,7 +111,7 @@ const MailVerification: React.FC<MailVerificationProps> = ({ email }) => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch("http://localhost:5600/api/send-otp", {
+      const response = await fetch("https://lyrical-p6de.onrender.com/api/send-otp", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

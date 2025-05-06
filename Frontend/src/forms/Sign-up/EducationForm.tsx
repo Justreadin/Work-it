@@ -51,7 +51,7 @@ const EducationForm: React.FC = () => {
 
     try {
       console.log("Request received", educationData);
-      const response = await fetch("http://localhost:5600/api/education", {
+      const response = await fetch("https://lyrical-p6de.onrender.com/api/education", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

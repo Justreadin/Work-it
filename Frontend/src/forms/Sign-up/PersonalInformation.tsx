@@ -130,7 +130,7 @@ const PersonalInformation: React.FC = () => {
 
       console.log("📦 Request Body:", JSON.stringify(requestBody, null, 2));
 
-      const response = await fetch("http://localhost:5600/api/personalinformation", {
+      const response = await fetch("https://lyrical-p6de.onrender.com/api/personalinformation", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
