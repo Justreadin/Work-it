@@ -197,22 +197,26 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model("User", userSchema);
 
-// Fetch user by email with Redis caching
 const getUserByEmail = async (email) => {
   const cacheKey = `user:email:${email}`;
 
   try {
+    // Check if the user is cached
     const cachedUser = await redisClient.get(cacheKey);
-    if (cachedUser) return JSON.parse(cachedUser);
+    if (cachedUser) {
+      return JSON.parse(cachedUser);
+    }
 
+    // If not cached, fetch from database
     const user = await User.findOne({ email });
     if (user) {
-      await redisClient.setEx(cacheKey, 3600, JSON.stringify(user)); // cache for 1 hour
+      // Cache the user data for 1 hour (3600 seconds)
+      await redisClient.set(cacheKey, JSON.stringify(user), { EX: 3600 });
     }
 
     return user;
   } catch (error) {
-    console.error(error);
+    console.error('Error fetching user by email:', error);
     throw error;
   }
 };
@@ -223,13 +227,13 @@ const createUser = async (email, hashedPassword) => {
     const newUser = new User({ email, password: hashedPassword });
     await newUser.save();
 
-    // Optional: Set the cache after creation
+    // Optionally, set the cache after creation
     const cacheKey = `user:email:${email}`;
-    await redisClient.setEx(cacheKey, 3600, JSON.stringify(newUser));
+    await redisClient.set(cacheKey, JSON.stringify(newUser), { EX: 3600 });
 
     return newUser;
   } catch (error) {
-    console.error(error);
+    console.error('Error creating user:', error);
     throw error;
   }
 };
