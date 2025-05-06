@@ -40,27 +40,36 @@ if (process.env.NODE_ENV === "development") {
 }
 
 module.exports = { pool };
-*/
-const mongoose = require("mongoose");
+*/const { MongoClient, ServerApiVersion } = require("mongodb");
 const redis = require("redis");
 require("dotenv").config();
+
+let mongoClient; // To be exported for later DB access
 
 // MongoDB Connection
 const connectMongoDB = async () => {
   try {
-    // Connect to MongoDB using the connection string from the environment variables
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log(`✅ Connected to MongoDB at ${process.env.MONGO_URI}`);
+    mongoClient = new MongoClient(process.env.MONGO_URI, {
+      serverApi: {
+        version: ServerApiVersion.v1,
+        strict: true,
+        deprecationErrors: true,
+      },
+    });
+
+    await mongoClient.connect();
+    await mongoClient.db("admin").command({ ping: 1 });
+    console.log("✅ Connected to MongoDB successfully!");
   } catch (err) {
     console.error("❌ MongoDB connection error:", err.message);
-    process.exit(1); // Exit if unable to connect to MongoDB
+    process.exit(1); // Exit on failure
   }
 };
 
 // Redis Client
 const redisClient = redis.createClient({
-  url: process.env.REDIS_URL || "redis://localhost:6379", // Use the REDIS_URL from .env or fallback to localhost
-  legacyMode: true, // For compatibility with older Redis libraries (optional)
+  url: process.env.REDIS_URL || "redis://localhost:6379",
+  legacyMode: true,
 });
 
 redisClient.connect().catch((err) => {
@@ -75,8 +84,9 @@ redisClient.on("error", (err) => {
   console.error("❌ Redis error:", err);
 });
 
-// Exporting the connection methods and Redis client
+// Export both clients
 module.exports = {
   connectMongoDB,
   redisClient,
+  mongoClient,
 };
