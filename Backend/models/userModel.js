@@ -211,9 +211,7 @@ const getUserByEmail = async (email) => {
     const user = await User.findOne({ email });
     if (user) {
       // Cache the user data for 1 hour (3600 seconds)
-      await redisClient.set(cacheKey, JSON.stringify(user), {
-        EX: 3600,  // Correctly setting the expiration time
-      });
+      await redisClient.set(cacheKey, JSON.stringify(user), 'EX', 3600);  // Corrected Redis call
     }
 
     return user;
@@ -231,9 +229,7 @@ const createUser = async (email, hashedPassword) => {
 
     // Optionally, set the cache after creation
     const cacheKey = `user:email:${email}`;
-    await redisClient.set(cacheKey, JSON.stringify(newUser), {
-      EX: 3600,  // Correctly setting the expiration time
-    });
+    await redisClient.set(cacheKey, JSON.stringify(newUser), 'EX', 3600);  // Corrected Redis call
 
     return newUser;
   } catch (error) {
@@ -241,6 +237,7 @@ const createUser = async (email, hashedPassword) => {
     throw error;
   }
 };
+
 
 
 // Save personal information to the user document
