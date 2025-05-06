@@ -31,7 +31,7 @@ mongoose.connect("mongodb+srv://dave400g:Justreading.1m@workit.xm1ak19.mongodb.n
   .catch((err) => console.error("MongoDB connection error:", err));
 
 // Middleware
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+app.use(cors({ origin: 'https://symmetrical-happiness-jjr69p6v74rg2qq6p-5173.app.github.dev', credentials: true }));
 app.use(bodyParser.json());
 app.use('/uploads', express.static('uploads'));
 app.use('/api', apiRoutes);
