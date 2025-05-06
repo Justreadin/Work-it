@@ -71,7 +71,7 @@ const redisClient = require('./config/redis');
 require('dotenv').config();
 const rateLimiter = require('./config/rateLimit');
 const mongoose = require('mongoose');
-const { getUserById } = require('./models/userModel');
+const { getUserByEmail } = require('./models/userModel');
 
 const app = express();
 
