@@ -31,7 +31,28 @@ mongoose.connect("mongodb+srv://dave400g:Justreading.1m@workit.xm1ak19.mongodb.n
   .catch((err) => console.error("MongoDB connection error:", err));
 
 // Middleware
-app.use(cors({ origin: 'https://symmetrical-happiness-jjr69p6v74rg2qq6p-5173.app.github.dev', credentials: true }));
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://symmetrical-happiness-jjr69p6v74rg2qq6p-5173.app.github.dev',
+  'https://lyrical-p6de.onrender.com'
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Handle preflight requests
+app.options('*', cors());
+
 app.use(bodyParser.json());
 app.use('/uploads', express.static('uploads'));
 app.use('/api', apiRoutes);
