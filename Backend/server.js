@@ -114,6 +114,12 @@ app.get('/api/user/:id', async (req, res) => {
   }
 });
 
+
+app.get('/api/test', (req, res) => {
+  res.json({ message: 'API working' });
+});
+
+
 // Serve static frontend
 /*const frontendDistPath = path.join(__dirname, '../Frontend/dist');
 app.use(express.static(frontendDistPath));
