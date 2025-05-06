@@ -11,16 +11,23 @@ const { getUserByEmail } = require('./models/userModel');
 
 const app = express();
 
-// Connect to MongoDB without deprecated options
-mongoose.connect(process.env.MONGO_URI, {
+
+// Check if MONGO_URI is valid
+if (!process.env.MONGO_URI) {
+  console.error("MONGO_URI is not defined in .env file");
+  process.exit(1); // Exit the process if the URI is not found
+}
+
+// Connect to MongoDB
+mongoose.connect("mongodb+srv://dave400g:Justreading.1m@workit.xm1ak19.mongodb.net/?retryWrites=true&w=majority&appName=Workit", {
   serverApi: {
     version: '1',
     strict: true,
-    deprecationErrors: true, // Enable deprecation warnings
+    deprecationErrors: true,
   }
 })
   .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.error("MongoDB error:", err));
+  .catch((err) => console.error("MongoDB connection error:", err));
 
 // Middleware
 app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
