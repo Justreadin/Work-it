@@ -1,10 +1,10 @@
+// config/redis.js
 const Redis = require('ioredis');
-const url = require('url');
 
-// Parse the REDIS_URL from environment variables
-const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379'; // Default to localhost if no REDIS_URL is provided
+// Use REDIS_PUBLIC_URL if provided
+const redisUrl = process.env.REDIS_PUBLIC_URL || 'redis://localhost:6379';
 
-// Use the parsed URL to configure the Redis client
+// Create and configure the Redis client
 const redis = new Redis(redisUrl);
 
 redis.on('connect', () => {
