@@ -5,7 +5,7 @@ interface Action {
   payload:{
     token: string,
    userId: string,
-   //role: string
+   role: string
   }
 }
  const authSlice = createSlice({
@@ -13,12 +13,12 @@ interface Action {
   initialState: {
     token: "",
     userId: "",
-    // role: "",
+    role: "",
   },
   reducers: {
     setAuth(state, action: Action) {
-        const{token, userId} = action.payload
-        // state.role = role
+        const{token, userId, role} = action.payload
+        state.role = role
         state.token = token
         state.userId = userId
     }

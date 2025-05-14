@@ -13,8 +13,11 @@ export const useLoginForm = (
   const [error, setError] = useState(errorState);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const dispatch = useDispatch()
-  
+  const dispatch = useDispatch();
+
+  const ADMIN = import.meta.env.VITE_ADMIN;
+  const CLIENT = import.meta.env.VITE_CLIENT;
+  const WORKER = import.meta.env.VITE_WORKER;
 
   const [formData, setFormData] = useState<LoginDataProp>(initialState);
 
@@ -31,30 +34,47 @@ export const useLoginForm = (
     }
   };
 
-  const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     console.log("working");
     try {
       let values = Object.values(formData).filter((item) => item === "");
       if (values.length === 0) {
-        const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/auth/login`,
-          JSON.stringify({email: formData.mail, password: formData.password}),
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_BASE_URL}/api/auth/login`,
+          JSON.stringify({ email: formData.mail, password: formData.password }),
           {
-            headers:{
-              'Content-Type': 'application/json'
-            }
-
+            headers: {
+              "Content-Type": "application/json",
+            },
           }
-        )
-       
-        const {accessToken, user} = response.data
-        let token = accessToken as string
-        let id = user._id as string
-        setLoading(false)
-        dispatch(authAction.setAuth({token: token, userId: id}))
-        dispatch(toastActions.showToast({success: true, message: "Login successful"}))
-        navigate("/gigs");
+        );
+
+        const { accessToken, user } = response.data;
+        let token = accessToken as string;
+        let id = user._id as string;
+        let role = user.role as string;
+
+        setLoading(false);
+        dispatch(authAction.setAuth({ token: token, userId: id, role: role }));
+        dispatch(
+          toastActions.showToast({ success: true, message: "Login successful" })
+        );
+
+        switch (role) {
+          case WORKER:
+            navigate("/gigs");
+            break;
+          case CLIENT:
+            navigate("/client");
+            break;
+          case ADMIN:
+            navigate("/admin");
+            break;
+          default:
+            navigate("/login");
+        }
       } else {
         let newErr = { mail: "", password: "" };
         Object.keys(formData).forEach((key) => {
@@ -64,7 +84,6 @@ export const useLoginForm = (
             formData[fieldKey].trim() === ""
           ) {
             newErr[fieldKey] = `${fieldKey} is required`;
-      
           }
         });
         setError(newErr);
@@ -72,8 +91,10 @@ export const useLoginForm = (
         return;
       }
     } catch (err) {
-      dispatch(toastActions.showToast({success: false, message: "Login failed"}))
-      setLoading(false)
+      dispatch(
+        toastActions.showToast({ success: false, message: "Login failed" })
+      );
+      setLoading(false);
     }
   };
 

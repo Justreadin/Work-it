@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import image from "../assets/Images/image (2).jpg";
+import image from "../../assets/Images/image (2).jpg";
 import { FaGoogle } from "react-icons/fa";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { NavLink } from "react-router-dom";
