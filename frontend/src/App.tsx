@@ -1,9 +1,9 @@
 import "./index.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Home from "./pages/Home";
-import Login from "./forms/Login";
+import Home from "./pages/general/Home";
+import Login from "./pages/auth/Login";
 import PageLayout from "./pages/PageLayout";
-import SignUpOne from "./forms/SignUpOne";
+import SignUpOne from "./pages/auth/SignUpOne";
 import PersonalizedModal from "./modals/PersonalizedModal";
 // import StageFormLayout from "./forms/StageFormLayout";
 import PersonalInformation from "./forms/Sign-up/PersonalInformation";

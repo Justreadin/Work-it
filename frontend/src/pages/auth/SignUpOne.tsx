@@ -3,12 +3,12 @@ import image from "../assets/Images/Rectangle 13.jpg";
 import { FaGoogle } from "react-icons/fa";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { NavLink } from "react-router-dom";
-import MailVerification from "../modals/MailVerification";
-import LoadingButton from "../ui/LoadingButton";
-import ActionButton from "../ui/ActionButton";
+import MailVerification from "../../modals/MailVerification";
+import LoadingButton from "../../ui/LoadingButton";
+import ActionButton from "../../ui/ActionButton";
 
 
-import { useSignupForm } from "./hooks/UseLogingandSIgnupForm";
+import { useSignupForm } from "../../forms/hooks/UseLogingandSIgnupForm";
 const SignUpOne: React.FC = () => {
   const inputRef = useRef<HTMLInputElement | null>(null)
   const{formData, handleChange, handleSubmit, handleViewPassword, loading, showPassword, verifyModal} = useSignupForm({email:"", password:"", cofirmPassword:""})

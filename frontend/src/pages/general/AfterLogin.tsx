@@ -1,5 +1,5 @@
-import Header from "../header/Header"
-import Footer from "../home/Footer"
+import Header from "../../header/Header"
+import Footer from "../../home/Footer"
 import { Outlet } from "react-router-dom"
  const AFterLogin:React.FC=()=>{
     return(
