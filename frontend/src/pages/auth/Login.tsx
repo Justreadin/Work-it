@@ -1,11 +1,11 @@
 import React, { useEffect, useRef } from "react";
-import image from "../assets/Images/image (2).jpg";
+import image from "../../assets/Images/image (2).jpg";
 import { FaGoogle } from "react-icons/fa";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { NavLink } from "react-router-dom";
-import { useLoginForm } from "./hooks/UseLogingandSIgnupForm";
-import ActionButton from "../ui/ActionButton";
-import LoadingButton from "../ui/LoadingButton";
+import { useLoginForm } from "../../forms/hooks/UseLogingandSIgnupForm";
+import ActionButton from "../../ui/ActionButton";
+import LoadingButton from "../../ui/LoadingButton";
 const Login: React.FC = () => {
   const [showPassword, setShowPassword] = React.useState(false);
  

@@ -1,9 +1,9 @@
 import React from "react";
-import Hero from "../home/Hero"
-import WhoWeAre from "../home/WhoWeAre";
-import Opportunities from "../home/Opportunities";
-import Uniqueness from "../home/Uniqueness";
-import Equip from "../home/Equip";
+import Hero from "../../home/Hero"
+import WhoWeAre from "../../home/WhoWeAre";
+import Opportunities from "../../home/Opportunities";
+import Uniqueness from "../../home/Uniqueness";
+import Equip from "../../home/Equip";
 
 // import Hero from "../protected/welcome/Hero";
 const Home: React.FC = () => {
