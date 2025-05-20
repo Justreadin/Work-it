@@ -17,6 +17,7 @@ import Toast from "./modals/Toast";
 import { ToastContextProvider } from "./contexts/ToastContext";
 import ClientLayout from "./layouts/ClientLayout";
 import WorkersLyaout from "./layouts/WorkersLayout";
+import ClientHome from "./pages/client/ClientHome";
 
 function App() {
   return (
@@ -38,7 +39,7 @@ function App() {
 
             {/* Not protected yet. This is Engr. Opeyem's section: Twist the layout to sweet your work demand */}
             <Route path="/client" element={<ClientLayout />}>
-              <Route index element={<Home />} />
+              <Route index element={<ClientHome />} />
             </Route>
 
             <Route path="/sign-upprofile" element={<FormWrapper />}>

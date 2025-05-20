@@ -20,17 +20,17 @@ const Opportunities:React.FC=()=>{
     
 
     return(
-        <div className="mt-48 text-center sm:text-left">
+        <div className="mt-6 text-center sm:text-left">
             <div>
-                <h3 className="text-xl text-customPurple font-bold">Browse talent by category</h3>
-                <p className="text-dark_gray text-4xl font-normal mt-6">Looking for work? <span className="text-customPurple underline">Browse jobs</span></p>
+                <h3 className="text-xl font-bold text-customPurple">Browse talent by category</h3>
+                <p className="mt-6 text-4xl font-normal text-dark_gray">Looking for work? <span className="text-customPurple underline">Browse jobs</span></p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-6 grid-rows-2 mt-6 gap-4">
+            <div className="mt-6 grid grid-cols-1 grid-rows-2 gap-4 sm:grid-cols-6">
                 {
                     dummyArray().map((item, index)=>{
                         return(
-                            <div className="dropshadow bg-white_gray rounded-lg text-left px-4 py-5 space-y-5 sm:space-y-0 justify-between" key={index}>
-                                <h3 className="text-3xl sm:text-xl font-normal opacity-80">{item.name}</h3>
+                            <div className="dropshadow justify-between space-y-5 rounded-lg bg-white_gray px-4 py-5 text-left sm:space-y-0" key={index}>
+                                <h3 className="text-3xl font-normal opacity-80 sm:text-xl">{item.name}</h3>
                                 <p className="text-base text-dark_gray opacity-80">{item.quantity}</p>
                             </div>
                         )

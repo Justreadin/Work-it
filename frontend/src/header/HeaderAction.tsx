@@ -1,32 +1,51 @@
 import React from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { NavLink } from "react-router-dom";
-import BecomeAclientButton from "../ui/BecomeAclientButton"
-const HeaderAction: React.FC = () => {
-  const status = false;
+import BecomeAclientButton from "../ui/BecomeAclientButton";
 
+interface HeaderActionProps {
+  showSearch?: boolean;
+  searchPlaceholder?: string;
+  clientActionText?: string;
+  clientLink?: string;
+  placeholderColor?: string;
+  searchButton?: string;
+  onSearchChange?: (value: string) => void;
+}
+
+const HeaderAction: React.FC<HeaderActionProps> = ({
+  showSearch = false,
+  searchPlaceholder = "Search for opportunities",
+  clientActionText = "Become a Client",
+  placeholderColor = "text-dark_gray",
+  searchButton = "border-2",
+  clientLink = "/client",
+  onSearchChange,
+}) => {
   return (
     <div className="flex items-center space-x-7">
-      {status ? (
-        <div className="flex items-center border-2 border-gray-200 text-gray-300 rounded-3xl p-2.5 space-x-2">
-          <AiOutlineSearch className="w-5 h-5" />
+      {showSearch ? (
+        <div className={`${searchButton} flex items-center space-x-2 rounded-3xl border-gray-200 p-2.5 text-gray-300`}>
+          <AiOutlineSearch className="h-5 w-5" />
           <input
             type="text"
-            className="text-dark_gray text-lg font-medium border-none px-2"
-            placeholder="Search for opportunities"
+            placeholder={searchPlaceholder}
+            className={`${placeholderColor} border-none bg-transparent px-2 text-lg font-medium focus:outline-none`}
+            onChange={(e) => onSearchChange?.(e.target.value)}
           />
         </div>
       ) : (
         <NavLink
           to="/login"
-          className="px-6 py-2.5 rounded-3xl bg-white_gray hover:bg-customPurple hover:border-white_gray hover:text-white_gray border-customPurple font-bold text-customPurple border"
+          className="rounded-3xl border border-customPurple bg-white_gray px-6 py-2.5 font-bold text-customPurple hover:border-white_gray hover:bg-customPurple hover:text-white_gray"
         >
           Login
         </NavLink>
       )}
-      <BecomeAclientButton/>
-      
+
+      <BecomeAclientButton actionName={clientActionText} link={clientLink} />
     </div>
   );
 };
+
 export default HeaderAction;

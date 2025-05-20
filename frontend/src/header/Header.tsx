@@ -1,31 +1,43 @@
+// Header.tsx
 import HeaderAction from "./HeaderAction";
 import Nav from "./Nav";
+import logo from "../assets/Images/WORKIT LOGO.png"
 import { useHeader } from "../contexts/HeaderContext";
 
-const Header = () => {
-  const holdState = useHeader();
-  const handleDroDown = () => {
-    holdState?.setHeaderState((prev) => {
-      return { ...prev, menu: !prev.menu };
-    });
+interface HeaderProps {
+  headerActionProps?: React.ComponentProps<typeof HeaderAction>;
+  backgroundClass?: string;
+  navTextColor?: string;
+  imageLogo?: string; 
+  navActiveClasses?: string;
+}
 
+const Header: React.FC<HeaderProps> = ({ headerActionProps, backgroundClass = "bg-white", navTextColor="text-dark_gray", navActiveClasses  = "text-dark_purple font-bold", imageLogo = logo}) => {
+  const holdState = useHeader();
+
+  const handleDropDown = () => {
+    holdState?.setHeaderState((prev) => ({
+      ...prev,
+      menu: !prev.menu,
+    }));
   };
+
   return (
-    <div className="w-full px-[5%] flex justify-between bg-white items-center py-4 md:py-10 shadow-md fixed z-50">
-      <div className="w-36 h-10 bg-logo border-none"></div>
-      <Nav />
-           <div className="hidden md:block">
-      <HeaderAction />
+    <div className={`${backgroundClass} fixed z-50 flex w-full items-center justify-between px-[5%] py-4 shadow-md md:py-10`}>
+      <div className="h-10 w-36 border-none">
+        <img src={imageLogo} alt="logo icon" />
+      </div>
+      <Nav textColor={navTextColor} activeClasses={navActiveClasses} />
+      <div className="hidden md:block">
+        <HeaderAction {...headerActionProps} />
       </div>
       <button
-        onClick={handleDroDown}
-        className="flex space-y-2 md:hidden flex-col"
+        onClick={handleDropDown}
+        className="flex flex-col space-y-2 md:hidden"
       >
         <span
           className={`bg-customPurple h-1 w-10 rounded-2xl duration-500 ${
-            holdState?.headerState.menu
-              ? "translate-y-3 rotate-45"
-              : "translate-y-0"
+            holdState?.headerState.menu ? "translate-y-3 rotate-45" : "translate-y-0"
           }`}
         ></span>
         <span
@@ -42,4 +54,5 @@ const Header = () => {
     </div>
   );
 };
+
 export default Header;
