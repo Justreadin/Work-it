@@ -38,8 +38,8 @@ const TalentList = () => {
   return (
     <div className="mx-auto w-full space-y-8 py-10">
       {/* Search Bar */}
-      <div className="flex items-center gap-4">
-        <div className={`flex w-full items-center space-x-2 rounded-3xl border border-gray-200 p-2.5 text-gray-300`}>
+      <div className="flex flex-col gap-4 md:flex-row md:items-center">
+        <div className={`flex w-full items-center gap-2 rounded-3xl border border-gray-200 p-2.5 text-gray-300`}>
             <AiOutlineSearch className="h-5 w-5" />
             <input
               type="text"
@@ -52,20 +52,20 @@ const TalentList = () => {
       </div>
 
       {/* Section Header */}
-      <h2 className="text-xl font-bold uppercase text-[#763DFF]">
+      <h2 className="text-lg font-bold uppercase text-[#763DFF] md:text-xl">
         Talents I Am Working With
       </h2>
 
       {/* Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full table-auto text-left text-white">
+      <div className="w-full overflow-x-auto">
+        <table className="min-w-full table-auto text-left text-sm text-white">
           <thead>
-            <tr className="text-center text-sm font-medium text-gray-400">
-              <th className="py-2">Name</th>
-              <th className="py-2">Starting date</th>
-              <th className="py-2">End Date</th>
-              <th className="py-2">Phone no.</th>
-              <th className="py-2">Email</th>
+            <tr className="text-center font-medium text-gray-500">
+              <th className="min-w-[150px] py-2">Name</th>
+              <th className="min-w-[120px] py-2">Starting date</th>
+              <th className="min-w-[120px] py-2">End Date</th>
+              <th className="min-w-[130px] py-2">Phone no.</th>
+              <th className="min-w-[200px] py-2">Email</th>
               <th className="py-2"></th>
             </tr>
           </thead>
@@ -76,7 +76,7 @@ const TalentList = () => {
                   <img
                     src={talent.avatar}
                     alt={talent.name}
-                    className="h-10 w-10 rounded-full"
+                    className="h-10 w-10 rounded-full object-cover"
                   />
                   <div >
                     <p className="font-bold text-black">{talent.name}</p>

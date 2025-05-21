@@ -11,7 +11,7 @@ const Footer: React.FC = () => {
     <div className="w-full px-[5%]">
 
         {/* Top Section */}
-      <div className="mt-28 flex w-full flex-col items-center justify-between space-y-12 border-b py-8 md:flex-row md:space-y-0">
+      <div className="mt-20 flex w-full flex-col items-center justify-between space-y-12 border-b py-8 md:flex-row md:space-y-0">
         {/* Left Section */}
         <div className="flex flex-col gap-6">
           <button className="h-10 w-36 border-none bg-logo"></button>

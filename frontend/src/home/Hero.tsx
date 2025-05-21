@@ -68,7 +68,7 @@ const Hero: React.FC<HeroProps> = ({
   callSpanClassName = "font-bold text-dark_purple",
   centSpanClassName = "font-bold text-dark_purple",
   descriptionClassName = "mt-6 text-center text-xl font-normal text-dark_gray sm:mt-9 sm:text-left",
-  buttonContainerClassName = "mt-5 flex items-center space-x-6",
+  buttonContainerClassName = "mt-5 flex items-center justify-center space-x-6 md:justify-start",
 }) => {
   return (
     <div className={`flex flex-col-reverse items-center gap-10 sm:gap-0 md:flex-row ${className}`}>
