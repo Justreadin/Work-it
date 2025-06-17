@@ -41,19 +41,13 @@ function App() {
             <Route path="/client" element={<ClientLayout />}>
               <Route index element={<ClientHome />} />
             </Route>
-
-            <Route path="/sign-upprofile" element={<FormWrapper />}>
-              <Route index element={<PersonalInformation />}></Route>
-              <Route
-                path="/sign-upprofile/education"
-                element={<EducationForm />}
-              ></Route>
-              <Route
-                path="/sign-upprofile/interest"
-                element={<Interest />}
-              ></Route>
-            </Route>
             <Route path="/personalized" element={<PersonalizedModal />} />
+            <Route path="/sign-upprofile" element={<FormWrapper />}>
+              <Route index element={<PersonalInformation />}/>
+              <Route path="/sign-upprofile/education" element={<EducationForm />}/>
+              <Route path="/sign-upprofile/interest"element={<Interest />}/>
+            </Route>
+            
             <Route path="/avatarupload" element={<PhotoUpload />} />
             <Route path="/home" element={<PageLayout />}>
               <Route index element={<Home />}></Route>

@@ -3,34 +3,25 @@ import Hero from "../protected/welcome/Hero";
 import DangerWarning from "../protected/welcome/DangerWarning";
 import Uniqueness from "../home/Uniqueness";
 import Equip from "../home/Equip";
-// import JobDetails from "../component/JobDetails";
+import JobDetails from "../components/JobDetails";
 import Opportunities from "../home/Opportunities";
-// import { useParams } from "react-router-dom";
+import { useParams} from "react-router-dom";
 import ApplyModal from "../modals/ApplyModal";
+import { useSelector } from "react-redux";
+import { RootStore } from "../store/globalStor";
 const ApplyForJob: React.FC = () => {
-  // const{id}=useParams()
 
-  // const[isOpen, setIsOpem] = useState(true)
-  // // useEffect(()=>{
-  // //   if(isOpen){
-  // //     document.body.style.overflow = "hidden"
-  // //     document.body.style.touchAction = "none"
-  // //   }
-  // //   else{
-  // //     document.body.style.overflow = "auto"
-  // //     document.body.style.touchAction = "auto"
-  // //   }
-  // // },[isOpen])
+  const{id}=useParams()
+  const {apply_modal_status} = useSelector((state: RootStore)=> state.gig)
   
   return (
     <>
-      
-    
-    {/* {isOpen && <ApplyModal/}> */}
-    <ApplyModal/>
+    {
+      apply_modal_status && <ApplyModal/>
+    }
       <div className="px-[5%]">
         <Hero />
-        {/* <JobDetails id={id} /> */}
+        <JobDetails id={id} />
         <DangerWarning />
         <Opportunities />
         <Uniqueness />

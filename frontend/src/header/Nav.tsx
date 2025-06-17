@@ -2,6 +2,9 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import { useHeader } from "../contexts/HeaderContext";
 import BecomeAclientButton from "../ui/BecomeAclientButton";
+import { useSelector } from "react-redux";
+import { RootStore } from "../store/globalStor";
+import JobSearch from "../protected/welcome/Jobs";
 
 interface NavProps {
   textColor?: string;
@@ -15,6 +18,8 @@ const Nav: React.FC<NavProps> = ({
   showMobileButtons = true,
 }) => {
   const holdState = useHeader();
+
+  const auth  = useSelector((state: RootStore) => state.auth);
 
   const navItems = [
     {
@@ -47,8 +52,8 @@ const Nav: React.FC<NavProps> = ({
         <NavLink
           key={index}
           to={item.to}
-          className={({ isActive }) =>
-            `${isActive ? activeClasses : `${textColor} font-normal`} ${
+          className={({ isActive }) => 
+            `text-lg ${isActive ? activeClasses : `${textColor} font-normal`} ${
               holdState?.headerState.menu ? "block text-center" : ""
             }`
           }
@@ -60,12 +65,17 @@ const Nav: React.FC<NavProps> = ({
       {showMobileButtons && (
         <div className="flex flex-col items-center space-y-10 p-4 sm:hidden md:hidden">
           <BecomeAclientButton actionName="Become a Client" link="/client" />
-          <NavLink
+          {auth.token ==="" ? (
+            <NavLink
             to="/login"
             className="w-full rounded-3xl border border-customPurple bg-white_gray px-6 py-1.5 font-semibold text-customPurple hover:border-white_gray hover:bg-customPurple hover:text-white_gray"
           >
             Login
           </NavLink>
+           
+          ) : (
+            <JobSearch header />
+          )}
         </div>
       )}
     </div>

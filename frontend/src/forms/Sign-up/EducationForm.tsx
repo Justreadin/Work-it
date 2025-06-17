@@ -1,65 +1,30 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useForm } from "../../contexts/FormContext";
-import { EduErrorProp, EduProp } from "../../constant/constant.type";
+import React, { useEffect, useRef } from "react";
+import useEduForm from "../hooks/UseEdducationForm";
 const EducationForm: React.FC = () => {
 
-  const[education, setEducation]=useState<EduProp>(
-    {highestDegree: "",nameOfSchool:"",startDate: "",endDate:"",schooling: false,schoolState:"",schoolCountry: ""}
-  )
+  // const[education, setEducation]=useState<EduProp>(
+  //   {highestDegree: "",nameOfSchool:"",startDate: "",endDate:"",schooling: false,schoolState:"",schoolCountry: ""}
+  // )
 
-  const[error,setErr]=useState<EduErrorProp>({highestDegree: "",nameOfSchool:"",startDate: "",endDate:"",schooling: false,schoolState:"",schoolCountry: "" })
+  //const[error,setErr]=useState<EduErrorProp>({highestDegree: "",nameOfSchool:"",startDate: "",endDate:"",schooling: false,schoolState:"",schoolCountry: "" })
 
   const selectRef = useRef<HTMLSelectElement | null>(null)
   useEffect(
     ()=>{
       selectRef.current?.focus()
     },[]
+
+    
   )
 
-  const formState = useForm()
-  const navigate = useNavigate()
- 
-
-  const handleChange = (e:React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
-    const{name,type, value}=e.target
-    setEducation((prev)=>{
-      return({...prev, [name]: type !=="checkbox"? value: true})
-    })
-
-    setErr((prev)=>{
-      return({...prev, [name]: ""})
-    })
-  };
-
-  const handleSubmit = (e:React.FormEvent<HTMLFormElement> | undefined)=>{
-    e?.preventDefault()
-    
-  }
-  const handleNext = ()=>{
-    let values = Object.values(education).filter((item)=> item == "")
-    if(values.length === 0){
-      formState?.setEducation(education)
-      formState?.setFilled((prev)=>{
-        return({...prev, education: true})
-      })
-      navigate("/sign-upprofile/interest")
-    }
-    else {
-      let newErrors: EduErrorProp = { highestDegree: "",nameOfSchool:"",startDate: "",endDate:"",schooling: false,schoolState:"",schoolCountry: ""}
-
-      Object.keys(education).forEach((key)=>{
-        let fieldKey = key as keyof EduProp
-        if(typeof education[fieldKey] === 'string' && !education[fieldKey].trim()){
-          newErrors[fieldKey]= `${fieldKey.toLowerCase()} is required`
-        }
-      })
-      setErr(newErrors)
-    }
-  }
-  const handleBack = ()=>{
-    navigate("/sign-upprofile")
-  }
+  const {education,
+    error,
+    handleChange,
+    handleBack,
+    handleSubmit,
+    location,
+    status,
+    handleNext}= useEduForm()
 
   return (
     <div className="w-full md:w-[70%] pb-[5%]">
@@ -76,6 +41,7 @@ const EducationForm: React.FC = () => {
           <select
             name="highestDegree"
             ref={selectRef}
+            value={education.highestDegree}
             onChange={(e)=>handleChange(e)}
             className="w-full border-2  focus:outline-customPurple px-5 py-3 rounded-3xl"
           >
@@ -103,6 +69,7 @@ const EducationForm: React.FC = () => {
           <input
             type="text"
             name="nameOfSchool"
+            value={education.nameOfSchool}
             className="w-full px-4 py-3 border-2 border-gray-400 rounded-3xl focus:outline-customPurple"
             onChange={(e) => handleChange(e)}
             placeholder="Type in the name of your school here"
@@ -121,6 +88,7 @@ const EducationForm: React.FC = () => {
               className="w-full border-2 text-dark_gray font-semibold rounded-3xl focus:outline-customPurple p-3"
               type="Date"
               name="startDate"
+              value={education.startDate}
               onChange={(e)=>handleChange(e)}
               placeholder="_ _/_ _/_ _"
               required
@@ -133,10 +101,10 @@ const EducationForm: React.FC = () => {
               End date {" "}<span className="text-xs text-red-500 my-10 font-semibold">{error.endDate}</span>
             </label><br />
             
-            
             <input
               className="w-full border-2 text-dark_gray font-semibold rounded-3xl focus:outline-customPurple p-3"
               type="date"
+              value={education.endDate}
               name="endDate"
               onChange={(e)=>handleChange(e)}
               placeholder="_ _/_ _/_ _"
@@ -154,6 +122,7 @@ const EducationForm: React.FC = () => {
           <input
             type="checkbox"
             name="schooling"
+            value={education.schooling? "chedcked": "unchecked"}
             onChange={(e) => handleChange(e)}
           />
         </div>
@@ -166,18 +135,17 @@ const EducationForm: React.FC = () => {
             </label>
             <select
               name="schoolState"
+              value={education.schoolState}
               onChange={(e)=>handleChange(e)}
               className="w-full border-2 text-dark_gray font-semibold rounded-3xl focus:outline-customPurple px-4 py-3"
             >
               <option className="text-dark_purple font-semibold" value="">
                 --Select state
               </option>
-              <option className="text-dark_purple font-semibold" value="male">
-                Califonia
-              </option>
-              <option className="text-dark_purple font-semibold" value="female">
-                Lagos
-              </option>
+              {
+                !status.loadingStates && location.states.length !== 0 && location.states.map((item)=>
+                <option value={item.isoCode}>{item.name}</option>)
+              }
             </select>
           </div>
 
@@ -190,18 +158,19 @@ const EducationForm: React.FC = () => {
             </label>
             <select
               name="schoolCountry"
+              value={education.schoolCountry}
               onChange={(e)=>handleChange(e)}
               className="w-full border-2 text-dark_gray font-semibold rounded-3xl focus:outline-customPurple px-4 py-3"
             >
               <option className="text-dark_purple font-semibold" value="">
                 --Select Country
               </option>
-              <option className="text-dark_purple font-semibold" value="male">
-                Califonia
-              </option>
-              <option className="text-dark_purple font-semibold" value="female">
-                Lagos
-              </option>
+              { status.loadingCountries && (<option value="">Loading...</option>)}
+              {
+                !status.loadingCountries && location.countries.length > 0 && location.countries.map((item)=>
+                  <option key = {item.isoCode} value={item.name}>{item.name}</option>
+                )
+              }
             </select>
           </div>
         </div>

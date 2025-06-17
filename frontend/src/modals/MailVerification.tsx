@@ -36,7 +36,7 @@ const MailVerification = ({ email }: Props) => {
       );
       if (response.status == 201) {
         setLoading(false)
-        navigate("/login");
+        navigate("/personalized");
       }
     } catch (err) {
       setLoading(false)
