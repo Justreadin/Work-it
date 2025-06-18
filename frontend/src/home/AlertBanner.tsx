@@ -16,11 +16,13 @@ const AlertBanner = () => {
       </div>
 
       {/* Image Section */}
+      <div className="w-[30%]">
       <img
         src= {alert}
         alt="Alert Notice"
-        className="object-contain"
+        className="w-full object-contain"
       />
+      </div>
     </div>
   );
 };

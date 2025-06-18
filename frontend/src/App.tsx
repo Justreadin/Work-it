@@ -16,8 +16,13 @@ import FormWrapper from "./forms/Sign-up/FormWraper";
 import Toast from "./modals/Toast";
 import { ToastContextProvider } from "./contexts/ToastContext";
 import ClientLayout from "./layouts/ClientLayout";
-import WorkersLyaout from "./layouts/WorkersLayout";
 import ClientHome from "./pages/client/ClientHome";
+import WorkersLayout from "./layouts/WorkersLayout";
+import ClientDashboardLayout from "./layouts/ClientDashboardLayout";
+import DashBoardHome from "./pages/client/Dashboard";
+import YourPost from "./pages/general/YourPost";
+import RolesLayout from "./layouts/RolesLayout";
+import PostDetails from "./pages/general/PostDetails";
 
 function App() {
   return (
@@ -31,7 +36,7 @@ function App() {
             <Route path="/sign-up" element={<SignUpOne />} />
 
             {/* workers starts here: This route is protected,  it requires loging token and correct role code to access it. Check WorkersLayout componenett for reference*/}
-            <Route path="/gigs" element={<WorkersLyaout />}>
+            <Route path="/gigs" element={<WorkersLayout />}>
               <Route index element={<Overview />} />
               <Route path="/gigs/:id" element={<ApplyForJob />} />
             </Route>
@@ -42,8 +47,17 @@ function App() {
               <Route index element={<ClientHome />} />
             </Route>
 
+            <Route path="/dashboard" element={<ClientDashboardLayout/>}>
+              <Route path="/dashboard/overview" element={<DashBoardHome/>}/>
+              <Route path="/dashboard/roles" element={<RolesLayout/>}>
+                <Route index element={<YourPost showPostButton={true} />} />
+                {/* <Route path="new" element={<PostNewRole />} /> */}
+                <Route path="/dashboard/roles/:id" element={<PostDetails />} /> 
+              </Route>
+            </Route>
+
             <Route path="/sign-upprofile" element={<FormWrapper />}>
-              <Route index element={<PersonalInformation />}></Route>
+              <Route index element={<PersonalInformation />}/></Route>
               <Route
                 path="/sign-upprofile/education"
                 element={<EducationForm />}
@@ -52,7 +66,6 @@ function App() {
                 path="/sign-upprofile/interest"
                 element={<Interest />}
               ></Route>
-            </Route>
             <Route path="/personalized" element={<PersonalizedModal />} />
             <Route path="/avatarupload" element={<PhotoUpload />} />
             <Route path="/home" element={<PageLayout />}>

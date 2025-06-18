@@ -13,6 +13,7 @@ const ClientLayout = () => {
           backgroundClass="bg-customPurple"
           headerActionProps={{
             showSearch: true,
+            showLogin: false,
             searchPlaceholder: "Search for talent",
             clientActionText: "Contact us",
             clientLink: "/hire",
@@ -23,6 +24,7 @@ const ClientLayout = () => {
           imageLogo={clientLogo}
           navActiveClasses="text-dark_purple font-bold rounded-full"
         />
+        
       </header>
       <Outlet />
       {/* you can remove the footer */}

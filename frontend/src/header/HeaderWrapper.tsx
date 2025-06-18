@@ -10,13 +10,15 @@ interface HeaderWrapperProps {
   navTextColor?: string;
   imageLogo?: string
   navActiveClasses?: string;
+  showNav?: boolean; // <-- new
+  showNavComponent?: boolean;
 }
 
-const HeaderWrapper: React.FC<HeaderWrapperProps> = ({ headerActionProps, backgroundClass, navTextColor, navActiveClasses, imageLogo }) => {
+const HeaderWrapper: React.FC<HeaderWrapperProps> = ({ headerActionProps, backgroundClass, navTextColor, navActiveClasses, imageLogo, showNav = true, showNavComponent = true}) => {
   return (
     <HeaderContextProvider>
       <Header headerActionProps={headerActionProps} backgroundClass={backgroundClass} navTextColor={navTextColor}
-      navActiveClasses={navActiveClasses} imageLogo={imageLogo} />
+      navActiveClasses={navActiveClasses} imageLogo={imageLogo} showNav={showNav} showNavComponent={showNavComponent} />
     </HeaderContextProvider>
   );
 };

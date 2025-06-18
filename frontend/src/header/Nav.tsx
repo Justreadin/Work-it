@@ -7,16 +7,26 @@ interface NavProps {
   textColor?: string;
   activeClasses?: string;
   showMobileButtons?: boolean;
+  isDashboard?: boolean;
 }
 
 const Nav: React.FC<NavProps> = ({
   textColor = "text-dark_gray",
   activeClasses = "text-dark_purple font-bold",
   showMobileButtons = true,
+  isDashboard = false,
 }) => {
   const holdState = useHeader();
 
-  const navItems = [
+  const dashboardNavItems = [
+    { location:"Overview", to: "/dashboard/overview"},
+    { location: "Roles", to: "/dashboard/roles" },
+    { location: "Your Talents", to: "/dashboard/talents" },
+    { location: "Message", to: "/dashboard/message" },
+    { location: "Payment", to: "/dashboard/payment" },
+  ];
+
+  const mainNavItems = [
     {
       location: "Home",
       to: "/home",
@@ -35,6 +45,8 @@ const Nav: React.FC<NavProps> = ({
     },
   ];
 
+  const navItems = isDashboard ? dashboardNavItems : mainNavItems;
+
   return (
     <div
       className={`${
@@ -48,7 +60,7 @@ const Nav: React.FC<NavProps> = ({
           key={index}
           to={item.to}
           className={({ isActive }) =>
-            `${isActive ? activeClasses : `${textColor} font-normal`} ${
+            `${isActive ? `bg-white text-dark_purple rounded-full px-4 py-1 font-semibold ${activeClasses}` : `${textColor} font-normal`} ${
               holdState?.headerState.menu ? "block text-center" : ""
             }`
           }
@@ -57,7 +69,7 @@ const Nav: React.FC<NavProps> = ({
         </NavLink>
       ))}
 
-      {showMobileButtons && (
+      {!isDashboard && showMobileButtons && (
         <div className="flex flex-col items-center space-y-10 p-4 sm:hidden md:hidden">
           <BecomeAclientButton actionName="Become a Client" link="/client" />
           <NavLink

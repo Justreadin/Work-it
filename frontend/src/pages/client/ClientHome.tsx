@@ -20,8 +20,8 @@ const ClientHome: React.FC = () => {
           reason="by sourcing task"
           imageSrc={leftImg}
           showDescription={false}
-          buttons={[
-            <BecomeAclientButton key="post" actionName="Post a New Role " link="#" className="nonebg px-8nonebg rounded-3xl border-2 border-transparent bg-dark_purple px-12 py-2.5 text-base font-bold text-white hover:border-dark_purple hover:bg-white_gray hover:text-dark_purple" />
+          buttons={[ <BecomeAclientButton key="post" actionName="Post a New Role " link="#" className="nonebg rounded-3xl border-2 border-transparent bg-dark_purple px-12 py-2.5 text-base font-bold text-white hover:border-dark_purple hover:bg-white_gray hover:text-dark_purple" />
+           
           ]}
         />
         <RoleTalentActions />
