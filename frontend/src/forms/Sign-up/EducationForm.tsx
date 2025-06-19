@@ -27,13 +27,13 @@ const EducationForm: React.FC = () => {
     handleNext}= useEduForm()
 
   return (
-    <div className="w-full md:w-[70%] pb-[5%]">
+    <div className="w-full pb-[5%] gap-8 max-w-4xl">
       <h2 className="text-lg text-customPurple font-bold opacity-80 text-center">
         Educational Background
       </h2>
-      <form onSubmit={handleSubmit} className="flex flex-col w-full">
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-8 md:grid-cols-2">
         {/* Highest degree*/}
-        <div className="w-full md:w-1/2 ">
+        <div className="w-full">
           <label className="text-dark_gray opacity-80" htmlFor="highesstDegree">
             Highest degree {" "}
             <span className="text-xs text-red-500 font-semibold">{error.highestDegree}</span>
@@ -63,7 +63,7 @@ const EducationForm: React.FC = () => {
         </div>
 
         {/* Name of school */}
-        <div className="mt-4 w-full">
+        <div className="w-full">
           <label className="text-dark_gray opacity-80"> Name of school </label> {" "}
           <span className="text-xs text-red-500 font-semibold">{error.nameOfSchool}</span>
           <input
@@ -76,7 +76,7 @@ const EducationForm: React.FC = () => {
           />
         </div>
 
-        <div className="w-full flex flex-col my-6 md:flex-row md:items-center md:space-x-5">
+        
           {/* Start Date */}
           <div className="w-full">
             <label className="text-dark_gray opacity-80" htmlFor="startDate">
@@ -112,7 +112,7 @@ const EducationForm: React.FC = () => {
             />
             <br />
           </div>
-        </div>
+        
 
         {/* Still schooling */}
         <div className="">
@@ -126,7 +126,32 @@ const EducationForm: React.FC = () => {
             onChange={(e) => handleChange(e)}
           />
         </div>
-        <div className="w-full flex flex-col my-6 md:flex-row md:items-center md:space-x-5">
+
+         {/* Country */}
+
+         <div className="w-full my-6 md:my-0">
+            <label className="text-dark_gray opacity-80" htmlFor="schoolCountry">Country
+              {" "}
+            <span className="text-xs text-red-500 font-semibold">{error.schoolCountry}</span>
+            </label>
+            <select
+              name="schoolCountry"
+              value={education.schoolCountry}
+              onChange={(e)=>handleChange(e)}
+              className="w-full border-2 text-dark_gray font-semibold rounded-3xl focus:outline-customPurple px-4 py-3"
+            >
+              {/* <option className="text-dark_purple font-semibold" value="">
+                --Select Country
+              </option> */}
+              { status.loadingCountries && (<option value="">Loading...</option>)}
+              {
+                !status.loadingCountries && location.countries.length > 0 && location.countries.map((item)=>
+                  <option key = {item.name} value={item.name}>{item.name}</option>
+                )
+              }
+            </select>
+          </div>
+        
           {/* State */}
           <div className="w-full">
             <label className="text-dark_gray opacity-80" htmlFor="schoolState">
@@ -144,36 +169,13 @@ const EducationForm: React.FC = () => {
               </option>
               {
                 !status.loadingStates && location.states.length !== 0 && location.states.map((item)=>
-                <option value={item.isoCode}>{item.name}</option>)
+                <option value={item.name} key={item.name}>{item.name}</option>)
               }
             </select>
           </div>
 
-          {/* Country */}
-
-          <div className="w-full my-6 md:my-0">
-            <label className="text-dark_gray opacity-80" htmlFor="schoolCountry">Country
-              {" "}
-            <span className="text-xs text-red-500 font-semibold">{error.schoolCountry}</span>
-            </label>
-            <select
-              name="schoolCountry"
-              value={education.schoolCountry}
-              onChange={(e)=>handleChange(e)}
-              className="w-full border-2 text-dark_gray font-semibold rounded-3xl focus:outline-customPurple px-4 py-3"
-            >
-              <option className="text-dark_purple font-semibold" value="">
-                --Select Country
-              </option>
-              { status.loadingCountries && (<option value="">Loading...</option>)}
-              {
-                !status.loadingCountries && location.countries.length > 0 && location.countries.map((item)=>
-                  <option key = {item.isoCode} value={item.name}>{item.name}</option>
-                )
-              }
-            </select>
-          </div>
-        </div>
+         
+        
       </form>
       <div className="flex justify-between items-center mt-20">
         <button

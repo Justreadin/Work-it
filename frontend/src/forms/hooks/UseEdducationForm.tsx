@@ -28,12 +28,22 @@ const useEduForm = () => {
     schoolCountry: "",
   });
 
+  const getEducation = ()=>{
+    const retrieved = localStorage.getItem("education")
+    if(retrieved){
+        const conpatible_type = JSON.parse(retrieved) as EduProp
+        setEducation(conpatible_type)
+    }
+  }
+
   const selectRef = useRef<HTMLSelectElement | null>(null);
   useEffect(() => {
     selectRef.current?.focus();
+    getEducation()
   }, []);
 
-  const formState = useForm();
+  const formState
+   = useForm();
   const navigate = useNavigate();
 
   const handleChange = (
@@ -45,18 +55,19 @@ const useEduForm = () => {
     const { name, type, value } = e.target;
     if (name === "schoolCountry") {
       const selectedCountry = location.countries.find(
-        (c) => c.isoCode === value
+        (c) => c.name === value
       );
+      console.log(value)
       if (selectedCountry) {
         setEducation((prev) => {
-          return { ...prev, [name]: selectedCountry.name };
+          return { ...prev, [name]: value };
         });
         setSelectedLocation((prev)=>{
             return{...prev, country: selectedCountry}
         })
       }
     } else if (name === "schoolState"){
-      const selectedState = location.states.find((s) => s.isoCode === value);
+      const selectedState = location.states.find((s) => s.name === value);
       if (selectedState) {
         setEducation((prev) => {
           return { ...prev, [name]: selectedState.name };
@@ -90,6 +101,7 @@ const useEduForm = () => {
       formState?.setFilled((prev) => {
         return { ...prev, education: true };
       });
+      localStorage.setItem("education", JSON.stringify(education))
       navigate("/sign-upprofile/interest");
     } else {
       let newErrors: EduErrorProp = {
