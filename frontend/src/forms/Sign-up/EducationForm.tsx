@@ -1,74 +1,39 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useForm } from "../../contexts/FormContext";
-import { EduErrorProp, EduProp } from "../../constant/constant.type";
+import React, { useEffect, useRef } from "react";
+import useEduForm from "../hooks/UseEdducationForm";
 const EducationForm: React.FC = () => {
 
-  const[education, setEducation]=useState<EduProp>(
-    {highestDegree: "",nameOfSchool:"",startDate: "",endDate:"",schooling: false,schoolState:"",schoolCountry: ""}
-  )
+  // const[education, setEducation]=useState<EduProp>(
+  //   {highestDegree: "",nameOfSchool:"",startDate: "",endDate:"",schooling: false,schoolState:"",schoolCountry: ""}
+  // )
 
-  const[error,setErr]=useState<EduErrorProp>({highestDegree: "",nameOfSchool:"",startDate: "",endDate:"",schooling: false,schoolState:"",schoolCountry: "" })
+  //const[error,setErr]=useState<EduErrorProp>({highestDegree: "",nameOfSchool:"",startDate: "",endDate:"",schooling: false,schoolState:"",schoolCountry: "" })
 
   const selectRef = useRef<HTMLSelectElement | null>(null)
   useEffect(
     ()=>{
       selectRef.current?.focus()
     },[]
+
+    
   )
 
-  const formState = useForm()
-  const navigate = useNavigate()
- 
-
-  const handleChange = (e:React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
-    const{name,type, value}=e.target
-    setEducation((prev)=>{
-      return({...prev, [name]: type !=="checkbox"? value: true})
-    })
-
-    setErr((prev)=>{
-      return({...prev, [name]: ""})
-    })
-  };
-
-  const handleSubmit = (e:React.FormEvent<HTMLFormElement> | undefined)=>{
-    e?.preventDefault()
-    
-  }
-  const handleNext = ()=>{
-    let values = Object.values(education).filter((item)=> item == "")
-    if(values.length === 0){
-      formState?.setEducation(education)
-      formState?.setFilled((prev)=>{
-        return({...prev, education: true})
-      })
-      navigate("/sign-upprofile/interest")
-    }
-    else {
-      let newErrors: EduErrorProp = { highestDegree: "",nameOfSchool:"",startDate: "",endDate:"",schooling: false,schoolState:"",schoolCountry: ""}
-
-      Object.keys(education).forEach((key)=>{
-        let fieldKey = key as keyof EduProp
-        if(typeof education[fieldKey] === 'string' && !education[fieldKey].trim()){
-          newErrors[fieldKey]= `${fieldKey.toLowerCase()} is required`
-        }
-      })
-      setErr(newErrors)
-    }
-  }
-  const handleBack = ()=>{
-    navigate("/sign-upprofile")
-  }
+  const {education,
+    error,
+    handleChange,
+    handleBack,
+    handleSubmit,
+    location,
+    status,
+    handleNext}= useEduForm()
 
   return (
-    <div className="w-full md:w-[70%] pb-[5%]">
+    <div className="w-full pb-[5%] gap-8 max-w-4xl">
       <h2 className="text-lg text-customPurple font-bold opacity-80 text-center">
         Educational Background
       </h2>
-      <form onSubmit={handleSubmit} className="flex flex-col w-full">
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-8 md:grid-cols-2">
         {/* Highest degree*/}
-        <div className="w-full md:w-1/2 ">
+        <div className="w-full">
           <label className="text-dark_gray opacity-80" htmlFor="highesstDegree">
             Highest degree {" "}
             <span className="text-xs text-red-500 font-semibold">{error.highestDegree}</span>
@@ -76,6 +41,7 @@ const EducationForm: React.FC = () => {
           <select
             name="highestDegree"
             ref={selectRef}
+            value={education.highestDegree}
             onChange={(e)=>handleChange(e)}
             className="w-full border-2  focus:outline-customPurple px-5 py-3 rounded-3xl"
           >
@@ -97,19 +63,20 @@ const EducationForm: React.FC = () => {
         </div>
 
         {/* Name of school */}
-        <div className="mt-4 w-full">
+        <div className="w-full">
           <label className="text-dark_gray opacity-80"> Name of school </label> {" "}
           <span className="text-xs text-red-500 font-semibold">{error.nameOfSchool}</span>
           <input
             type="text"
             name="nameOfSchool"
+            value={education.nameOfSchool}
             className="w-full px-4 py-3 border-2 border-gray-400 rounded-3xl focus:outline-customPurple"
             onChange={(e) => handleChange(e)}
             placeholder="Type in the name of your school here"
           />
         </div>
 
-        <div className="w-full flex flex-col my-6 md:flex-row md:items-center md:space-x-5">
+        
           {/* Start Date */}
           <div className="w-full">
             <label className="text-dark_gray opacity-80" htmlFor="startDate">
@@ -121,6 +88,7 @@ const EducationForm: React.FC = () => {
               className="w-full border-2 text-dark_gray font-semibold rounded-3xl focus:outline-customPurple p-3"
               type="Date"
               name="startDate"
+              value={education.startDate}
               onChange={(e)=>handleChange(e)}
               placeholder="_ _/_ _/_ _"
               required
@@ -133,10 +101,10 @@ const EducationForm: React.FC = () => {
               End date {" "}<span className="text-xs text-red-500 my-10 font-semibold">{error.endDate}</span>
             </label><br />
             
-            
             <input
               className="w-full border-2 text-dark_gray font-semibold rounded-3xl focus:outline-customPurple p-3"
               type="date"
+              value={education.endDate}
               name="endDate"
               onChange={(e)=>handleChange(e)}
               placeholder="_ _/_ _/_ _"
@@ -144,7 +112,7 @@ const EducationForm: React.FC = () => {
             />
             <br />
           </div>
-        </div>
+        
 
         {/* Still schooling */}
         <div className="">
@@ -154,10 +122,36 @@ const EducationForm: React.FC = () => {
           <input
             type="checkbox"
             name="schooling"
+            value={education.schooling? "chedcked": "unchecked"}
             onChange={(e) => handleChange(e)}
           />
         </div>
-        <div className="w-full flex flex-col my-6 md:flex-row md:items-center md:space-x-5">
+
+         {/* Country */}
+
+         <div className="w-full my-6 md:my-0">
+            <label className="text-dark_gray opacity-80" htmlFor="schoolCountry">Country
+              {" "}
+            <span className="text-xs text-red-500 font-semibold">{error.schoolCountry}</span>
+            </label>
+            <select
+              name="schoolCountry"
+              value={education.schoolCountry}
+              onChange={(e)=>handleChange(e)}
+              className="w-full border-2 text-dark_gray font-semibold rounded-3xl focus:outline-customPurple px-4 py-3"
+            >
+              {/* <option className="text-dark_purple font-semibold" value="">
+                --Select Country
+              </option> */}
+              { status.loadingCountries && (<option value="">Loading...</option>)}
+              {
+                !status.loadingCountries && location.countries.length > 0 && location.countries.map((item)=>
+                  <option key = {item.name} value={item.name}>{item.name}</option>
+                )
+              }
+            </select>
+          </div>
+        
           {/* State */}
           <div className="w-full">
             <label className="text-dark_gray opacity-80" htmlFor="schoolState">
@@ -166,45 +160,22 @@ const EducationForm: React.FC = () => {
             </label>
             <select
               name="schoolState"
+              value={education.schoolState}
               onChange={(e)=>handleChange(e)}
               className="w-full border-2 text-dark_gray font-semibold rounded-3xl focus:outline-customPurple px-4 py-3"
             >
               <option className="text-dark_purple font-semibold" value="">
                 --Select state
               </option>
-              <option className="text-dark_purple font-semibold" value="male">
-                Califonia
-              </option>
-              <option className="text-dark_purple font-semibold" value="female">
-                Lagos
-              </option>
+              {
+                !status.loadingStates && location.states.length !== 0 && location.states.map((item)=>
+                <option value={item.name} key={item.name}>{item.name}</option>)
+              }
             </select>
           </div>
 
-          {/* Country */}
-
-          <div className="w-full my-6 md:my-0">
-            <label className="text-dark_gray opacity-80" htmlFor="schoolCountry">Country
-              {" "}
-            <span className="text-xs text-red-500 font-semibold">{error.schoolCountry}</span>
-            </label>
-            <select
-              name="schoolCountry"
-              onChange={(e)=>handleChange(e)}
-              className="w-full border-2 text-dark_gray font-semibold rounded-3xl focus:outline-customPurple px-4 py-3"
-            >
-              <option className="text-dark_purple font-semibold" value="">
-                --Select Country
-              </option>
-              <option className="text-dark_purple font-semibold" value="male">
-                Califonia
-              </option>
-              <option className="text-dark_purple font-semibold" value="female">
-                Lagos
-              </option>
-            </select>
-          </div>
-        </div>
+         
+        
       </form>
       <div className="flex justify-between items-center mt-20">
         <button

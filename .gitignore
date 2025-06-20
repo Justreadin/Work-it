@@ -1,0 +1,15 @@
+# Ignore frontend dependencies
+frontend/node_modules/
+
+# Ignore frontend environment variables
+frontend/.env
+
+# Optional: ignore build artifacts (if you run a build step)
+frontend/dist/
+frontend/build/
+
+# macOS system files (optional)
+.DS_Store
+
+# Windows system files (optional)
+Thumbs.db

@@ -13,12 +13,11 @@ const ClientLayout = () => {
           backgroundClass="bg-customPurple"
           headerActionProps={{
             showSearch: true,
-            showLogin: false,
-            searchPlaceholder: "Search for talent",
+            // searchPlaceholder: "Search for talent",
             clientActionText: "Contact us",
             clientLink: "/hire",
             searchButton: "border-none bg-[#f9f9f933]",
-            placeholderColor: "placeholder:text-gray-300"
+            // placeholderColor: "placeholder:text-gray-300"
           }}
           navTextColor="text-[#f9f9f9]"
           imageLogo={clientLogo}

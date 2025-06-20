@@ -47,7 +47,6 @@ const ClientDashboardLayout = () => {
           showNav={true} // Hide main nav inside dashboard
           headerActionProps={{
             showBackButton: true, 
-            showLogin: false,           // Show back link to home
             clientActionText: "Contact us",  // Change CTA label
             clientLink: "/hire",             // Route for CTA button
           }}

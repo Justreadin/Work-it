@@ -11,7 +11,7 @@ export default {
         logo: "#D9D9D9",
         dark_purple: "#300BB0",
         white_gray: "#F9F9F9",
-        customPurple: "#6337FA"
+        customPurple: "#6337FA",
       }
     },
   },
