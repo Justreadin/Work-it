@@ -23,6 +23,9 @@ import DashBoardHome from "./pages/client/Dashboard";
 import YourPost from "./pages/general/YourPost";
 import RolesLayout from "./layouts/RolesLayout";
 import PostDetails from "./pages/general/PostDetails";
+import PostNewRole from "./pages/general/PostNewRole";
+import ShuffleModal from "./pages/general/ShuffleModal";
+import ShufflePage from "./pages/general/ShufflePage";
 
 function App() {
   return (
@@ -48,11 +51,13 @@ function App() {
             </Route>
 
             <Route path="/dashboard" element={<ClientDashboardLayout/>}>
-              <Route path="/dashboard/overview" element={<DashBoardHome/>}/>
+              <Route index path="/dashboard/overview" element={<DashBoardHome/>}/>
               <Route path="/dashboard/roles" element={<RolesLayout/>}>
                 <Route index element={<YourPost showPostButton={true} />} />
-                {/* <Route path="new" element={<PostNewRole />} /> */}
+                <Route path="/dashboard/roles/new" element={<PostNewRole />} />
                 <Route path="/dashboard/roles/:id" element={<PostDetails />} /> 
+                <Route path="/dashboard/roles/shuffling" element={<ShuffleModal/>}/>
+                <Route path="/dashboard/roles/shuffle" element={<ShufflePage />} />
               </Route>
             </Route>
 
