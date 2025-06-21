@@ -1,0 +1,151 @@
+Backend/
+│
+├── tests/
+│   ├── auth.test.js
+│   ├── worker.test.js         # New
+│   ├── client.test.js         # New
+│   └── ...
+│
+├── server.js
+├── config/
+│   ├── db.js
+│   ├── redis.js
+│   └── rateLimit.js
+│
+├── controllers/
+│   ├── auth/                  # Shared auth
+│   │   └── authController.js
+│   ├── worker/                # Worker-specific
+│   │   ├── profileController.js
+│   │   └── jobController.js
+│   └── client/                # Client-specific
+│       ├── profileController.js
+│       └── gigController.js
+│
+├── models/
+│   ├── User.js                # Base model
+│   ├── Worker.js              # Worker extensions
+│   └── Client.js              # Client extensions
+│
+├── routes/
+│   ├── auth.js
+│   ├── worker.js              # New
+│   └── client.js              # New
+│
+├── jobs/
+│   ├── otpQueue.js
+│   └── emailQueue.js
+│
+├── middlewares/
+│   ├── authMiddleware.js
+│   ├── roleMiddleware.js      # New
+│   ├── errorHandler.js
+│   └── validateInput.js
+│
+├── uploads/
+├── .env
+├── .gitignore
+├── package.json
+├── package-lock.json
+└── README.md
+
+
+Explanation of the Project Structure:
+Backend/
+This is the root directory of the backend application.
+
+tests/
+This directory contains the test files for various components of the backend:
+
+auth.test.js: Tests for authentication-related routes and functionality (e.g., login, registration).
+
+userController.test.js: Tests for the functions in the userController.js, such as registering a user, saving personal information, etc.
+
+utils.test.js: Tests for utility functions like OTP generation and email handling.
+
+server.js
+This is the main entry point of the application. It initializes the server, configures middleware, connects to the database, and listens for incoming HTTP requests.
+
+config/
+This directory contains configuration files for various parts of the application:
+
+db.js: Contains database connection configurations, e.g., MySQL or PostgreSQL configurations.
+
+redis.js: Configures the Redis client used for caching and session management.
+
+rateLimit.js: Contains rate-limiting configurations to prevent abuse of the API (e.g., limiting requests per minute).
+
+controllers/
+This directory holds the controllers that handle the business logic for different routes:
+
+userController.js: Contains functions like registerUser, loginUser, savePersonalInformation, etc., that interact with models and return responses to the client.
+
+models/
+This directory contains the data models that interface with the database:
+
+userModel.js: Contains functions for interacting with the user-related data, such as getting user information, saving personal information, etc.
+
+routes/
+This directory defines the routes for handling incoming API requests:
+
+api.js: Contains routes related to general API functionality.
+
+auth.js: Contains authentication routes (e.g., login, registration, and user authentication).
+
+jobs/
+This directory holds files for managing background jobs:
+
+otpQueue.js: Contains logic for queueing OTP generation and email sending jobs.
+
+emailQueue.js: Contains logic for queuing and sending emails (e.g., for verification).
+
+middlewares/
+This directory contains middleware functions that execute during the request lifecycle:
+
+authMiddleware.js: Middleware for checking if the user is authenticated by verifying the JWT.
+
+errorHandler.js: Middleware for handling errors globally in the app.
+
+validateInput.js: Middleware to validate user input before it reaches the controller.
+
+utils/
+This directory contains utility functions that are shared across the app:
+
+sendOtp.js: Utility function to generate and send OTP to users.
+
+mailService.js: Contains functions related to sending emails (e.g., for OTP verification).
+
+logger.js: Utility for logging errors and general information to monitor application health.
+
+uploads/
+This directory stores uploaded files, such as user profile pictures or documents.
+
+.env
+This file holds environment variables (e.g., database credentials, API keys, and JWT secrets) that are used throughout the application.
+
+.gitignore
+This file specifies which files and directories Git should ignore (e.g., node_modules, uploads, .env file).
+
+package.json
+This file contains metadata about the project, including dependencies, scripts, and project information like name, version, etc.
+
+package-lock.json
+This file locks the versions of the dependencies to ensure consistency across installations.
+
+README.md
+This file contains documentation for the project, including setup instructions, usage, and any additional information for developers or users.
+
+In summary:
+tests/ handles testing.
+
+controllers/ contains the logic for handling requests.
+
+models/ deals with the database and data persistence.
+
+routes/ defines the API endpoints.
+
+jobs/ handles background tasks like OTP generation and email sending.
+
+middlewares/ manages request processing (authentication, validation, error handling).
+
+utils/ holds utility functions that are used throughout the app.
