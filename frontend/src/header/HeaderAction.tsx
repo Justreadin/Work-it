@@ -15,7 +15,7 @@ interface HeaderActionProps {
 }
 
 const HeaderAction: React.FC<HeaderActionProps> = ({
-  showSearch = false,
+  // showSearch = false,
   showBackButton = false,
   clientActionText = "Become a Client",
   clientLink = "/client",
@@ -23,26 +23,25 @@ const HeaderAction: React.FC<HeaderActionProps> = ({
   const auth = useSelector((state: RootStore) => state.auth);
 
   return (
-  <div className="flex items-center gap-8">
-    {/* Show Back Button and BecomeAclientButton if showBackButton is true */}
-    {showBackButton && (
-      <>
-        <Link
-          to="/client"
-          className="flex items-center gap-3 text-lg text-white hover:underline"
-        >
-          <HiArrowLeft />
-          back to Website
-        </Link>
-        <BecomeAclientButton
-          actionName={clientActionText}
-          link={clientLink}
-        />
-      </>
-    )}
+    <div className="flex items-center gap-8">
+      {/* Show Back Button and BecomeAclientButton if showBackButton is true */}
 
-    {/* Show JobSearch or Login button only if showSearch is true */}
-    {showSearch && (
+      <>
+        {showBackButton && (
+          <Link
+            to="/client"
+            className="flex items-center gap-3 text-lg text-white hover:underline"
+          >
+            <HiArrowLeft />
+            back to Website
+          </Link>
+        )}
+
+        <BecomeAclientButton actionName={clientActionText} link={clientLink} />
+      </>
+
+      {/* Show JobSearch or Login button only if showSearch is true */}
+
       <div className="flex items-center space-x-7">
         {auth.token !== "" ? (
           <JobSearch header />
@@ -55,9 +54,8 @@ const HeaderAction: React.FC<HeaderActionProps> = ({
           </NavLink>
         )}
       </div>
-    )}
-  </div>
-);
-}
+    </div>
+  );
+};
 
 export default HeaderAction;

@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useHeader } from "../contexts/HeaderContext";
 import BecomeAclientButton from "../ui/BecomeAclientButton";
 import { useSelector } from "react-redux";
@@ -20,6 +20,8 @@ const Nav: React.FC<NavProps> = ({
   isDashboard = false,
 }) => {
   const holdState = useHeader();
+
+  const navigate = useNavigate()
 
   const dashboardNavItems = [
     { location:"Overview", to: "/dashboard/overview"},
@@ -57,7 +59,7 @@ const Nav: React.FC<NavProps> = ({
     <div
       className={`${
         holdState?.headerState.menu
-          ? "flex-col absolute top-16 left-0 w-full space-y-6 rounded-lg bg-inherit py-10"
+          ? "flex-col bg-white min-h-screen absolute top-16 left-0 w-full space-y-6 rounded-lg bg-inherit py-10"
           : "hidden"
       } md:flex h-11 items-center text-2xl duration-700 md:space-x-10`}
     >
@@ -66,7 +68,7 @@ const Nav: React.FC<NavProps> = ({
           key={index}
           to={item.to}
           className={({ isActive }) =>
-            `${isActive ? `bg-white text-dark_purple rounded-full px-4 py-1 font-semibold ${activeClasses}` : `${textColor} font-normal`} ${
+            ` text-base ${isActive ? `bg-white text-dark_purple  rounded-full px-4 py-1 font-semibold ${activeClasses}` : `${textColor} font-normal`} ${
               holdState?.headerState.menu ? "block text-center" : ""
             }`
           }
@@ -79,13 +81,9 @@ const Nav: React.FC<NavProps> = ({
         <div className="flex flex-col items-center space-y-10 p-4 sm:hidden md:hidden">
           <BecomeAclientButton actionName="Become a Client" link="/client" />
           {auth.token ==="" ? (
-            <NavLink
-            to="/login"
-            className="w-full rounded-3xl border border-customPurple bg-white_gray px-6 py-1.5 font-semibold text-customPurple hover:border-white_gray hover:bg-customPurple hover:text-white_gray"
-          >
-            Login
-          </NavLink>
-           
+            <button onClick={()=> navigate("/login")} className="w-full rounded-3xl border border-customPurple bg-white_gray text-base px-6 py-1.5 font-semibold text-customPurple hover:border-white_gray hover:bg-customPurple hover:text-white_gray">
+              Login
+            </button>
           ) : (
             <JobSearch header />
           )}

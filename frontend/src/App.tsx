@@ -61,22 +61,14 @@ function App() {
               </Route>
             </Route>
 
-            <Route path="/sign-upprofile" element={<FormWrapper />}>
-              <Route index element={<PersonalInformation />}/></Route>
-              <Route
-                path="/sign-upprofile/education"
-                element={<EducationForm />}
-              ></Route>
-              <Route
-                path="/sign-upprofile/interest"
-                element={<Interest />}
-              ></Route>
-            <Route path="/personalized" element={<PersonalizedModal />} />
-            <Route path="/sign-upprofile" element={<FormWrapper />}>
-              <Route index element={<PersonalInformation />}/>
-              <Route path="/sign-upprofile/education" element={<EducationForm />}/>
-              <Route path="/sign-upprofile/interest"element={<Interest />}/>
+            {/* worker profile form  */}
+            <Route  path="/sign-upprofile" element={<FormWrapper />}>
+                <Route index element={<PersonalInformation />}/>
+                <Route path="/sign-upprofile/education" element={<EducationForm />}/>
+                <Route path="/sign-upprofile/interest"element={<Interest/>}/>
             </Route>
+            <Route path="/personalized" element={<PersonalizedModal />} />
+            {/* worker profile form  ends here*/}
             
             <Route path="/avatarupload" element={<PhotoUpload />} />
             <Route path="/home" element={<PageLayout />}>

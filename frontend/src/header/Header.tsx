@@ -34,7 +34,7 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <div
-      className={`${backgroundClass} fixed z-50 flex w-full items-center justify-between px-[5%] py-4 shadow-md md:py-10`}
+      className={`${backgroundClass} fixed z-50 flex w-full items-center justify-between px-[5%] py-4 shadow-md md:py-4`}
     >
       <div className="h-10 w-36 border-none">
         <img src={imageLogo} alt="logo icon" />
