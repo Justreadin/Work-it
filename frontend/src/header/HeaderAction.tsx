@@ -23,9 +23,10 @@ const HeaderAction: React.FC<HeaderActionProps> = ({
   const auth = useSelector((state: RootStore) => state.auth);
 
   return (
-    <div className="flex items-center gap-8">
-      {/* Back Button */}
-      {showBackButton && (
+  <div className="flex items-center gap-8">
+    {/* Show Back Button and BecomeAclientButton if showBackButton is true */}
+    {showBackButton && (
+      <>
         <Link
           to="/client"
           className="flex items-center gap-3 text-lg text-white hover:underline"
@@ -33,29 +34,30 @@ const HeaderAction: React.FC<HeaderActionProps> = ({
           <HiArrowLeft />
           back to Website
         </Link>
-      )}
+        <BecomeAclientButton
+          actionName={clientActionText}
+          link={clientLink}
+        />
+      </>
+    )}
 
-      {showSearch && (
-        <div className="flex items-center space-x-7">
-          {auth.token !== "" ? (
-            <JobSearch header/>
-          ) : (
-            <NavLink
-              to="/login"
-              className="rounded-3xl border border-customPurple bg-white_gray px-6 py-2.5 font-bold text-customPurple hover:border-white_gray hover:bg-customPurple hover:text-white_gray"
-            >
-              Login
-            </NavLink>
-          )}
-
-          <BecomeAclientButton
-            actionName={clientActionText}
-            link={clientLink}
-          />
-        </div>
-      )}
-    </div>
-  );
-};
+    {/* Show JobSearch or Login button only if showSearch is true */}
+    {showSearch && (
+      <div className="flex items-center space-x-7">
+        {auth.token !== "" ? (
+          <JobSearch header />
+        ) : (
+          <NavLink
+            to="/login"
+            className="rounded-3xl border border-customPurple bg-white_gray px-6 py-2.5 font-bold text-customPurple hover:border-white_gray hover:bg-customPurple hover:text-white_gray"
+          >
+            Login
+          </NavLink>
+        )}
+      </div>
+    )}
+  </div>
+);
+}
 
 export default HeaderAction;
