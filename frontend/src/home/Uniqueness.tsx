@@ -3,13 +3,13 @@ import ourQuote from "../assets/Images/our quote 1 (1).png"
 import image from "../assets/Images/Frame 45.png"
 const Uniqueness:React.FC=()=>{
     return(
-        <div className="mt-48 flex flex-col items-center w-full">
-            <div className="flex flex-col items-center w-full sm:w-[70%] relative">
-                <img className="absolute -top-36 right-0" src={ourQuote} alt="Every great experience starts with a great spark" />
-                <h2 className="font-bold text-center text-3xl sm:text-xl text-customPurple w-full">what set us apart</h2>
-                <p className="opacity-80 text-dark_gray text-4xl font-normal mt-6 text-center w-full">Stop Wishing and Make Monney From Different people</p>
+        <div className="mt-14 flex w-full flex-col items-center">
+            <div className="relative flex w-full flex-col items-center sm:w-[70%]">
+                <img className="absolute -top-[5.5rem] right-0" src={ourQuote} alt="Every great experience starts with a great spark" />
+                <h2 className="w-full text-center text-3xl font-bold text-customPurple sm:text-xl">what set us apart</h2>
+                <p className="mt-6 w-full text-center text-4xl font-normal text-dark_gray opacity-80">Stop Wishing and Make Monney From Different people</p>
             </div>
-            <div className="flex justify-center w-full mt-11">
+            <div className="mt-11 flex w-full justify-center">
                 <img src={image} alt="" />
             </div>
 

@@ -19,7 +19,7 @@ export interface PersonalInfoProp{
     gender: string,
     address:string,
     state: string,
-    localGoverment: string
+    /*localGoverment: string*/
 }
 
 export interface ProviderProp{

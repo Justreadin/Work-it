@@ -7,7 +7,7 @@ import { RootStore } from "../store/globalStor";
 const allowedRole = import.meta.env.VITE_WORKER;
 
 {/* workers layout: Every route under this layout is protected. token and correct role code is required*/}
-const WorkersLyaout = () => {
+const WorkersLayout = () => {
   const { token, role } = useSelector((state: RootStore) => state.auth);
   return (
     <>
@@ -28,4 +28,4 @@ const WorkersLyaout = () => {
   );
 };
 
-export default WorkersLyaout;
+export default WorkersLayout;

@@ -11,14 +11,14 @@ const Footer: React.FC = () => {
     <div className="w-full px-[5%]">
 
         {/* Top Section */}
-      <div className="flex flex-col md:flex-row items-center space-y-12 md:space-y-0 justify-between border-b mt-48 py-8 w-full">
+      <div className="mt-20 flex w-full flex-col items-center justify-between space-y-12 border-b py-8 md:flex-row md:space-y-0">
         {/* Left Section */}
         <div className="flex flex-col gap-6">
-          <button className="w-36 h-10 bg-logo border-none"></button>
-          <p className="text-base self-center md:self-start font-normal text-neutral-900">
+          <button className="h-10 w-36 border-none bg-logo"></button>
+          <p className="self-center text-base font-normal text-neutral-900 md:self-start">
             There’s always a room for everybody
           </p>
-          <div className="flex items-center text-customPurple justify-between text-4xl">
+          <div className="flex items-center justify-between text-4xl text-customPurple">
             <FaLinkedin />
             <FaTwitter />
             <FaFacebook />
@@ -29,7 +29,7 @@ const Footer: React.FC = () => {
         {/* Right Section */}
         <div className="flex items-center space-x-12">
           <div className="flex flex-col space-y-4">
-            <h3 className="text-base text-white font-bold">Nav</h3>
+            <h3 className="text-base font-bold text-white">Nav</h3>
             {[
               {
                 name: "Home",
@@ -45,7 +45,7 @@ const Footer: React.FC = () => {
               },
             ].map((item, index) => (
               <NavLink
-                className="text-base text-dark_gray font-semibold"
+                className="text-base font-semibold text-dark_gray"
                 key={index}
                 to={item.detination}
               >
@@ -54,7 +54,7 @@ const Footer: React.FC = () => {
             ))}
           </div>
           <div className="flex flex-col space-y-4">
-            <h3 className="text-base text-customPurple font-bold">
+            <h3 className="text-base font-bold text-customPurple">
               Our Features
             </h3>
             {[
@@ -72,7 +72,7 @@ const Footer: React.FC = () => {
               },
             ].map((item, index) => (
               <NavLink
-                className="text-base text-dark_gray font-semibold"
+                className="text-base font-semibold text-dark_gray"
                 key={index}
                 to={item.detination}
               >
@@ -81,7 +81,7 @@ const Footer: React.FC = () => {
             ))}
           </div>
           <div className="flex flex-col space-y-4">
-            <h3 className="text-base text-customPurple font-bold">
+            <h3 className="text-base font-bold text-customPurple">
               Our Features
             </h3>
 
@@ -100,7 +100,7 @@ const Footer: React.FC = () => {
               },
             ].map((item, index) => (
               <NavLink
-                className="text-base text-dark_gray font-semibold"
+                className="text-base font-semibold text-dark_gray"
                 key={index}
                 to={item.detination}
               >
@@ -111,7 +111,7 @@ const Footer: React.FC = () => {
         </div>
       </div>
       {/* Bottom section */}
-      <div className="flex items-center justify-between my-4">
+      <div className="my-4 flex items-center justify-between">
         <div className="text-xs text-[#71717A]">
             <span>&copy; All right reserved 2024</span>
         </div>
