@@ -72,8 +72,10 @@ app.get('/api/test', (req, res) => {
   res.json({ message: 'API working' });
 });
 
-// Simple test route
-app.get("/")
+app.get("/", (req, res) => {
+  res.json({ message: 'Workit Freelance app' });
+});
+
 app.head("/", (req, res) => {
   res.json({ message: 'Workit Freelance app' });
 });
