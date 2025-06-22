@@ -5,37 +5,30 @@ const path = require('path');
 const authRoutes = require("./routes/auth");
 const workerRoutes = require("./routes/worker");
 const clientRoutes = require("./routes/client");
-const { cacheClient } = require('./config/db'); // Using our in-memory cache
+const { connectMongoDB, cacheClient } = require('./config/db'); // ✅ Import connectMongoDB
 require('dotenv').config();
 const rateLimiter = require('./config/rateLimit');
-const mongoose = require('mongoose');
-const { getUserByEmail } = require('./models/User');
+const { dbClient } = require('./config/db');
+
+// ✅ Swagger setup
+const setupSwagger = require('./config/swagger');
 
 const app = express();
 
-app.use(express.json());
+app.use(cors({
+  origin: "*", // or use specific origin for security
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
 
-// Check if MONGO_URI is valid
-if (!process.env.MONGO_URI) {
-  console.error("MONGO_URI is not defined in .env file");
-  process.exit(1); // Exit the process if the URI is not found
-}
-
-// Connect to MongoDB
-mongoose.connect("mongodb+srv://dave400g:Justreading.1m@workit.xm1ak19.mongodb.net/?retryWrites=true&w=majority&appName=Workit", {
-  serverApi: {
-    version: '1',
-    strict: true,
-    deprecationErrors: true,
-  }
-})
-    .then(() => console.log("MongoDB connected"))
-    .catch((err) => console.error("MongoDB connection error:", err));
-
-// Middleware
-app.use(cors());
 app.use(bodyParser.json());
+app.use(express.json());
 app.use('/uploads', express.static('uploads'));
+
+// ✅ Swagger docs
+setupSwagger(app);
+
+// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/worker", workerRoutes);
 app.use("/api/client", clientRoutes);
@@ -46,19 +39,13 @@ app.get('/api/user/:id', async (req, res) => {
   const cacheKey = `user:id:${userId}`;
 
   try {
-    // Check cache
     const cachedUser = cacheClient.get(cacheKey);
-    if (cachedUser) {
-      return res.json(cachedUser);
-    }
+    if (cachedUser) return res.json(cachedUser);
 
-    // Fetch from DB
-    const user = await getUserById(userId);
+    const user = await dbClient.getUserById(userId);
     if (!user) return res.status(404).json({ error: 'User not found' });
 
-    // Cache the result for 1 hour
-    cacheClient.set(cacheKey, user, 3600);
-
+    cacheClient.set(cacheKey, user, 3600); // cache for 1 hour
     res.json(user);
   } catch (err) {
     console.error('Error fetching user:', err);
@@ -66,17 +53,32 @@ app.get('/api/user/:id', async (req, res) => {
   }
 });
 
+
+// Simple test route
 app.get('/api/test', (req, res) => {
   res.json({ message: 'API working' });
 });
 
-// Serve static frontend
-/*const frontendDistPath = path.join(__dirname, '../Frontend/dist');
+// Optional: Serve frontend build
+/*
+const frontendDistPath = path.join(__dirname, '../Frontend/dist');
 app.use(express.static(frontendDistPath));
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(frontendDistPath, 'index.html'));
-});*/
+});
+*/
 
-const port = process.env.PORT || 5600;
-app.listen(port, () => console.log(`Server running on port ${port}`));
+// ✅ Start server only after DB connects
+const startServer = async () => {
+  try {
+    await connectMongoDB(); // ✅ Connect to MongoDB first
+    const port = process.env.PORT || 5600;
+    app.listen(port, () => console.log(`🚀 Server running on port ${port}`));
+  } catch (err) {
+    console.error("❌ Failed to start server:", err.message);
+    process.exit(1);
+  }
+};
+
+startServer();

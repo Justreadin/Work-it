@@ -1,6 +1,6 @@
 const { MongoClient, ServerApiVersion } = require("mongodb");
 require("dotenv").config();
-
+const { ObjectId } = require("mongodb");
 let mongoClient;
 let db;
 
@@ -91,6 +91,22 @@ const memoryCache = {
 // Comprehensive database methods with transactions support
 const dbClient = {
     // User management
+
+     async getUserById(userId) {
+        try {
+            if (!ObjectId.isValid(userId)) {
+            console.warn("⚠️ Invalid ObjectId format:", userId);
+            return null;
+            }
+
+            const objectId = new ObjectId(userId); // safe if string
+            return await db.collection('users').findOne({ _id: objectId });
+        } catch (err) {
+            console.error("❌ Error in getUserById:", err.message);
+            return null;
+        }
+    },
+    
     async getUserByEmail(email) {
         return db.collection('users').findOne({ email });
     },

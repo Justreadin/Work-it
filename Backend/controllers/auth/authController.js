@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 const { getDb } = require("../../config/db");
-const db = getDb();
+
 
 const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret_key";
 const otpCache = {};
@@ -18,6 +18,7 @@ const transporter = nodemailer.createTransport({
 
 // Common auth functions
 const loginUser = async (req, res) => {
+    const db = getDb();
     const { email, password } = req.body;
 
     try {
@@ -42,6 +43,7 @@ const loginUser = async (req, res) => {
 };
 
 const registerUser = async (req, res) => {
+    const db = getDb();
     const { email, password, confirmPassword, role } = req.body;
 
     try {
@@ -91,22 +93,23 @@ const registerUser = async (req, res) => {
     }
 };
 
-// OTP functions
 const sendOtp = async (email) => {
-    const otp = crypto.randomInt(1000, 9999).toString();
-    otpCache[email] = { otp, expiresAt: Date.now() + 300000 };
+  const db = getDb();
+  const otp = crypto.randomInt(1000, 9999).toString();
+  otpCache[email] = { otp, expiresAt: Date.now() + 300000 };
 
-    const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: email,
-        subject: "Your Verification Code",
-        text: `Your verification code is: ${otp}`,
-    };
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: "Your Verification Code",
+    text: `Your verification code is: ${otp}`,
+  };
 
-    transporter.sendMail(mailOptions);
+  return transporter.sendMail(mailOptions); // ✅ return so you can await it
 };
 
 const verifyOtp = async (email, otp) => {
+    
     const cached = otpCache[email];
     if (cached && cached.expiresAt > Date.now() && cached.otp === otp) {
         delete otpCache[email];
