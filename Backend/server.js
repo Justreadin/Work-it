@@ -53,11 +53,31 @@ app.get('/api/user/:id', async (req, res) => {
   }
 });
 
+// Add this in your server.js/app.js
+app.get('/api/routes', (req, res) => {
+  const routes = [];
+  app._router.stack.forEach((middleware) => {
+    if (middleware.route) {
+      routes.push({
+        path: middleware.route.path,
+        method: middleware.route.stack[0].method.toUpperCase(),
+      });
+    }
+  });
+  res.json(routes);
+});
 
 // Simple test route
 app.get('/api/test', (req, res) => {
   res.json({ message: 'API working' });
 });
+
+// Simple test route
+app.get("/")
+app.head("/", (req, res) => {
+  res.json({ message: 'Workit Freelance app' });
+});
+
 
 // Optional: Serve frontend build
 /*
